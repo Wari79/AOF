@@ -5,6 +5,7 @@ import requests
 import random
 import json
 import asyncio
+from keep_alive import keep_alive
 import os
 from discord.utils import find
 import datetime
@@ -85,7 +86,7 @@ for filename in os.listdir("./cogs"):
         client.load_extension(f"cogs.{filename[:-3]}")
     (f"cogs.{filename[:-3]}")
   
-
+keep_alive()
 try:
   client.run(os.getenv("TOKEN"))
 except:
