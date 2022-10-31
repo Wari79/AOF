@@ -115,7 +115,7 @@ class actions(commands.Cog):
                       hp2r = member_data2.soldiers + powert2
                       hp1t = int(tanks.content) - member_data2.tanks
 
-                      ground3 = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{soldiers.content} {sold}\n{tanks.content} {tank}\n`{hearts} : {hp1r}`\n**__Commander {victim.name}'s Defence__**\n{member_data2.soldiers} {sold}\n{member_data2.tanks} {tank}\n`{hearts} : {hp2r}`", color=0xfbc28d)
+                      ground3 = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{soldiers.content} {sold}\n{tanks.content} {tank}\n{hearts} : `{hp1r}`\n**__Commander {victim.name}'s Defence__**\n{member_data2.soldiers} {sold}\n{member_data2.tanks} {tank}\n{hearts} : `{hp2r}`", color=0xfbc28d)
                       await ctx.send(embed=ground3)
 
                       ground4 = discord.Embed(description="Not too late to leave with your troops commander, are you sure you want it bloody?", color=0xfbc28d)
@@ -382,7 +382,7 @@ class actions(commands.Cog):
                                   member_data.resources += member_data2.resources
                                   member_data.strikes -= 1
                                   member_data2.soldiers = 0 
-                                  member_data.soldiers = int(hp1)
+                                  member_data.soldiers -= int(hp1)
                                   member_data2.resources = 0
                                   save_member_data(ctx.author.id, member_data)
                                   save_member_data(victim.id, member_data2)
@@ -391,7 +391,7 @@ class actions(commands.Cog):
                                   return
                                 else:
                                   member_data2.resources -= int(round(half3))
-                                  member_data.soldiers = int(hp1)
+                                  member_data.soldiers -= int(hp1)
                                   member_data2.soldiers = 0 
                                   member_data.resources += int(round(half3))
                                   member_data.strikes -= 1
@@ -429,8 +429,8 @@ class actions(commands.Cog):
                                     winnerftt.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
                                     winnerftt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
                                     await ctx.send(embed=winnerftt)
-                                    member_data.soldiers = int(hp1)
-                                    member_data.tanks = int(hp1t)
+                                    member_data.soldiers -= int(hp1)
+                                    member_data.tanks -= int(hp1t)
                                     member_data2.soldiers = 0 
                                     member_data2.tanks = 0
                                     member_data.resources += member_data2.resources
@@ -441,8 +441,8 @@ class actions(commands.Cog):
                                     
                                     return
                                   else:
-                                    member_data.soldiers = int(hp1)
-                                    member_data.tanks = int(hp1t)
+                                    member_data.soldiers -= int(hp1)
+                                    member_data.tanks -= int(hp1t)
                                     member_data2.soldiers = 0 
                                     member_data2.tanks = 0
                                     member_data2.resources -= int(round(halves))
@@ -473,8 +473,8 @@ class actions(commands.Cog):
                                     winner1tt.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
                                     winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
                                     await ctx.send(embed=winner1tt)
-                                    member_data.soldiers = int(hp1)
-                                    member_data.tanks = int(hp1t)
+                                    member_data.soldiers -= int(hp1)
+                                    member_data.tanks -= int(hp1t)
                                     member_data2.soldiers = 0 
                                     member_data2.tanks = 0                                           
                                     member_data.resources += member_data2.resources
@@ -486,8 +486,8 @@ class actions(commands.Cog):
                                     return
                                   else:
                                   
-                                    member_data.soldiers = int(hp1)
-                                    member_data.tanks = int(hp1t)
+                                    member_data.soldiers -= int(hp1)
+                                    member_data.tanks -= int(hp1t)
                                     member_data2.soldiers = 0 
                                     member_data2.tanks = 0
                                     member_data2.resources -= int(round(halves2))
@@ -517,8 +517,8 @@ class actions(commands.Cog):
                                     winner1tt.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
                                     winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
                                     await ctx.send(embed=winner1tt)
-                                    member_data.soldiers = int(hp1)
-                                    member_data.tanks = int(hp1t)
+                                    member_data.soldiers -= int(hp1)
+                                    member_data.tanks -= int(hp1t)
                                     member_data2.soldiers = 0 
                                     member_data2.tanks = 0                                           
                                     member_data.resources += member_data2.resources
@@ -530,8 +530,8 @@ class actions(commands.Cog):
                                     return
                                   else:
                                   
-                                    member_data.soldiers = int(hp1)
-                                    member_data.tanks = int(hp1t)
+                                    member_data.soldiers -= int(hp1)
+                                    member_data.tanks -= int(hp1t)
                                     member_data2.soldiers = 0 
                                     member_data2.tanks = 0
                                     member_data2.resources -= int(round(halves2))
@@ -549,6 +549,37 @@ class actions(commands.Cog):
                                 
 
                                   await victim.send(embed=emergency5)
+
+                            if hp1 <= 0 and hp2 <= 0:
+                              
+                                  
+                              grounds2 = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `{health1}`\n**__Commander {victim.name}'s Defence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `{health2}`", color=0xfbc28d)
+                              await ctx.send(embed=grounds2)  
+                              winner1tt = discord.Embed(title="Draw!", description=F"**Commander {ctx.author.name}** stalemates with {victim.name}", color=yellow)
+                            
+                                    
+                              winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                              await ctx.send(embed=winner1tt)
+                                  
+                              member_data.soldiers -= int(hp1)
+                              member_data.tanks -= int(hp1t)
+                              member_data2.soldiers = 0 
+                              member_data2.tanks = 0
+                              member_data.strikes -= 1
+                              save_member_data(ctx.author.id, member_data)
+                              save_member_data(victim.id, member_data2)
+                                    
+                              winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                              await ctx.send(embed=winner1tt)
+                            
+                                  
+
+                              emergency5 = discord.Embed(description="**Emergency**\n-\nYou have been attacked!\n-\nYour defences made it a draw, however your troops are dead", color=red)
+                                
+
+                              await victim.send(embed=emergency5)
+                              return
+                              
                             
                                     
                                   

@@ -12,13 +12,18 @@ res = "<:Resources:994990321240912052>"
 tank = "<:tank:994712805448093696>"
 strike = "<:strike:1025877750298452028>"
 wall = "<:wall:1006892740375760959>"
+ca = "<:ca:1036338258629632020>"
+crate = "<:crate:1036330635238842478>"
+
+
 data_filename = "data.pickle"
 data_filename3 = "quest2"
+data_filename4 = "specials"
 green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700
 class Data:
-      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, s, r):
+      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, s, r, crate, cr, scrap):
         self.resources = resources
         self.soldiers = soldiers
         self.tanks = tanks
@@ -27,6 +32,9 @@ class Data:
         self.strikes = strikes
         self.s = s
         self.r = r
+        self.crate = crate
+        self.cr = cr
+        self.scrap = scrap
 
 
 class income(commands.Cog):
@@ -119,7 +127,7 @@ class income(commands.Cog):
 
     
       
-
+#----Data
 
 def setup(client):
     client.add_cog(income(client))   
@@ -135,7 +143,7 @@ def load_member_data(member_ID):
     data = load_data()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -150,7 +158,7 @@ def save_member_data(member_ID, member_data):
 
 
 
-
+#-----Data 3
 
 
 def load_data3():
@@ -164,7 +172,7 @@ def load_member_data3(member_ID):
     data = load_data3()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -175,4 +183,34 @@ def save_member_data3(member_ID, member_data3):
     data[member_ID] = member_data3
 
     with open(data_filename3, "wb") as file:
+        pickle.dump(data, file)
+
+
+
+
+
+#-----Data 4
+
+def load_data4():
+        if os.path.isfile(data_filename4):
+            with open(data_filename4, "rb") as file:
+              return pickle.load(file)
+        else:
+            return dict()
+
+def load_member_data4(member_ID):
+    data = load_data4()
+
+    if member_ID not in data:
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    return data[member_ID]
+
+
+def save_member_data4(member_ID, member_data4):
+    data = load_data4()
+
+    data[member_ID] = member_data4
+
+    with open(data_filename4, "wb") as file:
         pickle.dump(data, file)
