@@ -9,20 +9,31 @@ import asyncio
 sold = "<:Soldier_Buzz:966705306342129704>"
 res = "<:Resources:994990321240912052>"
 tank = "<:tank:994712805448093696>"
-strike = "<:strike:1025877750298452028>"
+tank2 = "<:tank2:995097737974521948>"
+hearts = ":helmet_with_cross:"
+dead = "<:dead:1021894878294183987>"
 wall = "<:wall:1006892740375760959>"
+strike = "<:strike:1025877750298452028>" 
+ca = "<:ca:1036338258629632020>"
+crate = "<:crate:1036330635238842478>"
+dead = "<:dead:1025878302503739414>"
+spy = "🕵️"
 data_filename = "data.pickle"
+data_filename4 = "specials"
 green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700
 class Data:
-      def __init__(self, resources, soldiers, tanks, spy, wall, strikes):
+      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, ca, crate, scrap):
         self.resources = resources
         self.soldiers = soldiers
         self.tanks = tanks
         self.spy = spy
         self.wall = wall
         self.strikes = strikes
+        self.crate = crate
+        self.ca = ca
+        self.scrap = scrap
 
 def restart_bot():
     os.execv(sys.executable, ["python"] + sys.argv)
@@ -146,7 +157,8 @@ class owner(commands.Cog):
     @commands.is_owner()
     async def get(self, ctx):
       member_data = load_member_data(ctx.author.id)
-      first = discord.Embed(description=f"What shall I give you, general?\n-\nSoldiers {sold}\nTanks {tank}\nRobotic Spy :detective:\nResources {res}\nWall {wall}\nStrike {strike}", color=green)
+      member_data4 = load_member_data4(ctx.author.id)
+      first = discord.Embed(description=f"What shall I give you, general?\n-\nSoldiers {sold}\nTanks {tank}\nRobotic Spy :detective:\nResources {res}\nWall {wall}\nStrike {strike}\nCrate {crate}\nca {ca}", color=green)
       await ctx.reply(embed=first)
       msg1 = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id,)
 
@@ -166,6 +178,16 @@ class owner(commands.Cog):
         member_data.resources += int(amount.content)
         await ctx.reply(embed=complete)
         save_member_data(ctx.author.id, member_data)
+        return
+      elif msg1.content.lower() == "ca":
+        member_data4.ca += int(amount.content)
+        await ctx.reply(embed=complete)
+        save_member_data4(ctx.author.id, member_data4)
+        return
+      elif msg1.content.lower() == "crate":
+        member_data4.crate += int(amount.content)
+        await ctx.reply(embed=complete)
+        save_member_data4(ctx.author.id, member_data4)
         return
       elif msg1.content.lower() == "walls":
         member_data.wall += int(amount.content)
@@ -404,7 +426,7 @@ def load_member_data(member_ID):
     data = load_data()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -414,4 +436,36 @@ def save_member_data(member_ID, member_data):
     data[member_ID] = member_data
 
     with open(data_filename, "wb") as file:
+        pickle.dump(data, file)
+
+
+
+
+
+#--------------
+
+
+
+def load_data4():
+        if os.path.isfile(data_filename4):
+            with open(data_filename4, "rb") as file:
+              return pickle.load(file)
+        else:
+            return dict()
+
+def load_member_data4(member_ID):
+    data = load_data4()
+
+    if member_ID not in data:
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    return data[member_ID]
+
+
+def save_member_data4(member_ID, member_data4):
+    data = load_data4()
+
+    data[member_ID] = member_data4
+
+    with open(data_filename4, "wb") as file:
         pickle.dump(data, file)

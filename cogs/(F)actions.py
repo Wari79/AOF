@@ -14,18 +14,24 @@ strike = "<:strike:1025877750298452028>"
 hearts = ":helmet_with_cross:"
 dead = "<:dead:1025878302503739414>"
 spy = "🕵️"
+medal = "🏅"
+
+
+
 data_filename = "data.pickle"
+data_filename5 = "medals"
 green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700
 class Data:
-      def __init__(self, resources, soldiers, tanks, spy, wall, strikes):
+      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, medals):
         self.resources = resources
         self.soldiers = soldiers
         self.tanks = tanks
         self.spy = spy
         self.wall = wall
         self.strikes = strikes
+        self.medals = medals
 
 
 
@@ -50,9 +56,10 @@ class actions(commands.Cog):
       else:
         if not victim.bot:
           member_data = load_member_data(ctx.author.id)
+          member_data5 = load_member_data5(ctx.author.id)
           member_data2 = load_member_data(victim.id)
           if member_data.strikes <= 0:
-            insuf = discord.Embed(title="Error!", description=f"You need at least 1 {strike} to launch and attack!", color=0xFFD700)
+            insuf = discord.Embed(title="Error!", description=f"You need at least 1 {strike} to launch an attack!", color=0xFFD700)
             await ctx.reply(embed=insuf)
             ctx.command.reset_cooldown(ctx)
             return
@@ -180,13 +187,15 @@ class actions(commands.Cog):
                                   await victim.send(embed=emergency6)
                                   member_data.soldiers = int(hp1)
                                   member_data2.soldiers = 0 
-                                  member_data2.tanks = 0                                           
+                                  member_data2.tanks = 0  
+                                  member_data5.medals += 1
                                   member_data.resources += member_data2.resources
                                   member_data.strikes -= 1
                                   winner1tt.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
                                   winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
                                   await ctx.send(embed=winner1tt)
                                   member_data2.resources = 0
+                                  save_member_data5(ctx.author.id, member_data5)
                                   save_member_data(ctx.author.id, member_data)
                                   save_member_data(victim.id, member_data2)
                                   
@@ -197,6 +206,8 @@ class actions(commands.Cog):
                                   emergency6 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
                                   await victim.send(embed=emergency6)
                                   await ctx.send(embed=winner1tt)
+
+                                  member_data5.medals += 1
                                   
                                   member_data.soldiers = int(hp1)
                                   member_data2.soldiers = 0 
@@ -204,6 +215,7 @@ class actions(commands.Cog):
                                   member_data2.resources -= int(round(thrive))
                                   member_data.resources += int(round(thrive))
                                   member_data.strikes -= 1
+                                  save_member_data5(ctx.author.id, member_data5)
                                   save_member_data(ctx.author.id, member_data)
                                   save_member_data(victim.id, member_data2)
                                   
@@ -244,6 +256,7 @@ class actions(commands.Cog):
                                     member_data.tanks = int(hp1t)
                                     member_data2.soldiers = 0 
                                     member_data2.tanks = 0
+                                    member_data5.medals += 1
                                     
                                     member_data.resources += member_data2.resources
                                     member_data2.resources = 0
@@ -251,6 +264,7 @@ class actions(commands.Cog):
                                     winnerl.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
                                     winnerl.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
                                     await ctx.send(embed=winnerl)
+                                    save_member_data5(ctx.author.id, member_data5)
                                     save_member_data(ctx.author.id, member_data)
                                     save_member_data(victim.id, member_data2)
                                     return
@@ -261,11 +275,13 @@ class actions(commands.Cog):
                                     member_data.soldiers = int(hp1)
                                     member_data.tanks = int(hp1t)
                                     member_data2.soldiers = 0 
+                                    member_data5.medals += 1
                                     member_data2.tanks = 0
                                     member_data.strikes -= 1
                                     winnerl.add_field(name="__Rewards:__", value=f"{round(killer)} {res}")
                                     winnerl.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
                                     await ctx.send(embed=winnerl)
+                                    save_member_data5(ctx.author.id, member_data5)
                                     save_member_data(ctx.author.id, member_data)
                                     save_member_data(victim.id, member_data2)
                                     return
@@ -384,6 +400,8 @@ class actions(commands.Cog):
                                   member_data2.soldiers = 0 
                                   member_data.soldiers -= int(hp1)
                                   member_data2.resources = 0
+                                  member_data5.medals += 1
+                                  save_member_data5(ctx.author.id, member_data5)
                                   save_member_data(ctx.author.id, member_data)
                                   save_member_data(victim.id, member_data2)
                                   
@@ -395,6 +413,8 @@ class actions(commands.Cog):
                                   member_data2.soldiers = 0 
                                   member_data.resources += int(round(half3))
                                   member_data.strikes -= 1
+                                  member_data5.medals += 1
+                                  save_member_data5(ctx.author.id, member_data5)
                                   save_member_data(ctx.author.id, member_data)
                                   save_member_data(victim.id, member_data2)
                                   return
@@ -436,6 +456,8 @@ class actions(commands.Cog):
                                     member_data.resources += member_data2.resources
                                     member_data.strikes -= 1
                                     member_data2.resources = 0
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
                                     save_member_data(ctx.author.id, member_data)
                                     save_member_data(victim.id, member_data2)
                                     
@@ -448,6 +470,8 @@ class actions(commands.Cog):
                                     member_data2.resources -= int(round(halves))
                                     member_data.resources += int(round(halves))
                                     member_data.strikes -= 1
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
                                     save_member_data(ctx.author.id, member_data)
                                     save_member_data(victim.id, member_data2)
                                     winnerftt.add_field(name="__Rewards:__", value=f"{int(round(halves))} {res}")
@@ -480,6 +504,9 @@ class actions(commands.Cog):
                                     member_data.resources += member_data2.resources
                                     member_data.strikes -= 1
                                     member_data2.resources = 0
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
+                                    
                                     save_member_data(ctx.author.id, member_data)
                                     save_member_data(victim.id, member_data2)
                                     
@@ -493,6 +520,8 @@ class actions(commands.Cog):
                                     member_data2.resources -= int(round(halves2))
                                     member_data.resources += int(round(halves2))
                                     member_data.strikes -= 1
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
                                     save_member_data(ctx.author.id, member_data)
                                     save_member_data(victim.id, member_data2)
                                     winner1tt.add_field(name="__Rewards:__", value=f"{int(round(halves2))} {res}")
@@ -524,6 +553,8 @@ class actions(commands.Cog):
                                     member_data.resources += member_data2.resources
                                     member_data.strikes -= 1
                                     member_data2.resources = 0
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
                                     save_member_data(ctx.author.id, member_data)
                                     save_member_data(victim.id, member_data2)
                                     
@@ -537,6 +568,8 @@ class actions(commands.Cog):
                                     member_data2.resources -= int(round(halves2))
                                     member_data.resources += int(round(halves2))
                                     member_data.strikes -= 1
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
                                     save_member_data(ctx.author.id, member_data)
                                     save_member_data(victim.id, member_data2)
                                     winner1tt.add_field(name="__Rewards:__", value=f"{int(round(halves2))} {res}")
@@ -566,11 +599,11 @@ class actions(commands.Cog):
                               member_data2.soldiers = 0 
                               member_data2.tanks = 0
                               member_data.strikes -= 1
+                              
                               save_member_data(ctx.author.id, member_data)
                               save_member_data(victim.id, member_data2)
                                     
                               winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-                              await ctx.send(embed=winner1tt)
                             
                                   
 
@@ -1738,7 +1771,7 @@ def load_member_data(member_ID):
     data = load_data()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -1748,4 +1781,29 @@ def save_member_data(member_ID, member_data):
     data[member_ID] = member_data
 
     with open(data_filename, "wb") as file:
+        pickle.dump(data, file)
+
+
+def load_data5():
+        if os.path.isfile(data_filename5):
+            with open(data_filename5, "rb") as file:
+              return pickle.load(file)
+        else:
+            return dict()
+
+def load_member_data5(member_ID):
+    data = load_data5()
+
+    if member_ID not in data:
+        return Data(0, 0, 0, 0, 0, 0, 0)
+
+    return data[member_ID]
+
+
+def save_member_data5(member_ID, member_data5):
+    data = load_data5()
+
+    data[member_ID] = member_data5
+
+    with open(data_filename5, "wb") as file:
         pickle.dump(data, file)

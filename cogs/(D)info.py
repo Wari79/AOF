@@ -13,15 +13,27 @@ hearts = ":helmet_with_cross:"
 dead = "<:dead:1021894878294183987>"
 wall = "<:wall:1006892740375760959>"
 strike = "<:strike:1025877750298452028>" 
+ca = "<:ca:1036338258629632020>"
+crate = "<:crate:1036330635238842478>"
+medal = "🏅"
+
+
+
 data_filename = "data.pickle"
+data_filename4 = "specials"
+data_filename5 = "medals"
 class Data:
-      def __init__(self, resources, soldiers, tanks, spy, wall, strikes):
+      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, crate, ca, scrap, medals):
         self.resources = resources
         self.soldiers = soldiers
         self.tanks = tanks
         self.spy = spy
         self.wall = wall
         self.strikes = strikes
+        self.crate = crate
+        self.ca = ca
+        self.scrap = scrap
+        self.medals = medals
         
 
 
@@ -129,6 +141,8 @@ class info(commands.Cog):
     @commands.guild_only()
     async def base(self, ctx):
       member_data = load_member_data(ctx.author.id)
+      member_data4 = load_member_data4(ctx.author.id)
+      member_data5 = load_member_data5(ctx.author.id)
       health1 = member_data.soldiers * 1
       health2 = member_data.soldiers * 1 + member_data.tanks * 10
 
@@ -140,34 +154,45 @@ class info(commands.Cog):
       embed = discord.Embed(title=f"{ctx.author.display_name}'s Base", color=0xfbc28d)
       
       embed.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}", inline = True)
+      embed.add_field(name="War Medals", value=f"{member_data5.medals} {medal}", inline=True)
       embed.add_field(name="Army", value=f"{member_data.strikes} {strike}\n{str(member_data.soldiers)} {sold}\n{str(member_data.tanks)} {tank}", inline = False)
+      embed.add_field(name="Specials", value=f"{member_data4.ca} {ca}\n{member_data4.crate} {crate}", inline = False)
       embed.add_field(name="Wealth", value=f"{str(member_data.resources)} {res}", inline = False)
       embed.add_field(name="Total HP", value=f"{health2} {hearts}", inline = False)
+      embed.set_thumbnail(url="https://media.discordapp.net/attachments/814828851724943361/995035645053513829/ezgif.com-gif-maker.jpg")
       #----
       embeds = discord.Embed(title=f"{ctx.author.display_name}'s Base", color=0xfbc28d)
       
-      embeds.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}", inline = False)
+      embeds.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}", inline = True)
+      embeds.add_field(name="War Medals", value=f"{member_data5.medals} {medal}", inline=True)
       embeds.add_field(name="Army", value=f"{member_data.strikes} {strike}\n{str(member_data.soldiers)} {sold}\n{str(member_data.tanks)} {tank}\n{str(member_data.spy)} :detective:", inline = False)
+      embeds.add_field(name="Specials", value=f"{member_data4.ca} {ca}\n{member_data4.crate} {crate}", inline = False)
       embeds.add_field(name="Wealth", value=f"{str(member_data.resources)} {res}", inline = False)
       embeds.add_field(name="Total HP", value=f"{health2} {hearts}", inline = False)
+      embeds.set_thumbnail(url="https://media.discordapp.net/attachments/814828851724943361/995035645053513829/ezgif.com-gif-maker.jpg")
 
       #---
 
       embedsp = discord.Embed(title=f"{ctx.author.display_name}'s Base", color=0xfbc28d)
       
-      embedsp.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}", inline = False)
+      embedsp.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}", inline = True)
+      embedsp.add_field(name="War Medals", value=f"{member_data5.medals} {medal}", inline=True)
       embedsp.add_field(name="Army", value=f"{member_data.strikes} {strike}\n{str(member_data.soldiers)} {sold}\n{str(member_data.spy)} :detective:", inline = False)
+      embedsp.add_field(name="Specials", value=f"{member_data4.ca} {ca}\n{member_data4.crate} {crate}", inline = False)
       embedsp.add_field(name="Wealth", value=f"{str(member_data.resources)} {res}", inline = False)
       embedsp.add_field(name="Total HP", value=f"{health2} {hearts}", inline = False)
+      embedsp.set_thumbnail(url="https://media.discordapp.net/attachments/814828851724943361/995035645053513829/ezgif.com-gif-maker.jpg")
       
       #----
      
       embed2 = discord.Embed(title=f"{ctx.author.display_name}'s Base", color=0xfbc28d)
-      embed2.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}", inline = False)
+      embed2.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}", inline = True)
+      embed2.add_field(name="War Medals", value=f"{member_data5.medals} {medal}", inline=True)
       embed2.add_field(name="Army", value=f"{member_data.strikes} {strike}\n{str(member_data.soldiers)} {sold}", inline = False)
+      embed2.add_field(name="Specials", value=f"{member_data4.ca} {ca}\n{member_data4.crate} {crate}", inline = False)
       embed2.add_field(name="Wealth", value=f"{str(member_data.resources)} {res}", inline = False)
       embed2.add_field(name="Total HP", value=f"{health1} {hearts}", inline = False)
-      embed.set_thumbnail(url="https://media.discordapp.net/attachments/814828851724943361/995035645053513829/ezgif.com-gif-maker.jpg")
+      embed2.set_thumbnail(url="https://media.discordapp.net/attachments/814828851724943361/995035645053513829/ezgif.com-gif-maker.jpg")
 
 
       base_info = discord.Embed(description="Intel has been successfully sent to your DMs. :white_check_mark:", color=0x567d46)
@@ -206,7 +231,7 @@ def load_member_data(member_ID):
     data = load_data()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -216,4 +241,60 @@ def save_member_data(member_ID, member_data):
     data[member_ID] = member_data
 
     with open(data_filename, "wb") as file:
+        pickle.dump(data, file)
+
+
+
+
+#--------------------------------
+
+def load_data4():
+        if os.path.isfile(data_filename4):
+            with open(data_filename4, "rb") as file:
+              return pickle.load(file)
+        else:
+            return dict()
+
+def load_member_data4(member_ID):
+    data = load_data4()
+
+    if member_ID not in data:
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    return data[member_ID]
+
+
+def save_member_data4(member_ID, member_data4):
+    data = load_data4()
+
+    data[member_ID] = member_data4
+
+    with open(data_filename4, "wb") as file:
+        pickle.dump(data, file)
+
+
+
+
+def load_data5():
+        if os.path.isfile(data_filename5):
+            with open(data_filename5, "rb") as file:
+              return pickle.load(file)
+        else:
+            return dict()
+
+def load_member_data5(member_ID):
+    data = load_data5()
+
+    if member_ID not in data:
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    return data[member_ID]
+
+
+def save_member_data5(member_ID, member_data5):
+    data = load_data5()
+
+    data[member_ID] = member_data5
+
+    with open(data_filename5, "wb") as file:
         pickle.dump(data, file)

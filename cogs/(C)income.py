@@ -10,10 +10,15 @@ import json
 sold = "<:Soldier_Buzz:966705306342129704>"
 res = "<:Resources:994990321240912052>"
 tank = "<:tank:994712805448093696>"
-strike = "<:strike:1025877750298452028>"
+tank2 = "<:tank2:995097737974521948>"
+hearts = ":helmet_with_cross:"
+dead = "<:dead:1021894878294183987>"
 wall = "<:wall:1006892740375760959>"
+strike = "<:strike:1025877750298452028>" 
 ca = "<:ca:1036338258629632020>"
-crate = "<:crate:1036330635238842478>"
+crates = "<:crate:1036330635238842478>"
+dead = "<:dead:1025878302503739414>"
+spy = "🕵️"
 
 
 data_filename = "data.pickle"
@@ -23,7 +28,7 @@ green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700
 class Data:
-      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, s, r, crate, cr, scrap):
+      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, s, r, crate, ca, scrap):
         self.resources = resources
         self.soldiers = soldiers
         self.tanks = tanks
@@ -33,7 +38,7 @@ class Data:
         self.s = s
         self.r = r
         self.crate = crate
-        self.cr = cr
+        self.ca = ca
         self.scrap = scrap
 
 
@@ -101,7 +106,7 @@ class income(commands.Cog):
 #-------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
-      
+
     
     @commands.command()
     @commands.guild_only()
@@ -124,6 +129,81 @@ class income(commands.Cog):
        member_data3 = load_member_data3(ctx.author.id)
        member_data3.r += 1
        save_member_data3(ctx.author.id, member_data3)
+
+    @commands.command()
+    @commands.guild_only()
+    @cooldown(1, per_sec=30, type=commands.BucketType.user)
+    async def open(self, ctx, crate=None):
+      member_data = load_member_data(ctx.author.id)
+      member_data4 = load_member_data4(ctx.author.id)
+      if crate != "crate":
+        return
+      if member_data4.crate <= 0:
+        error = discord.Embed(title="Error!", description=f"Commander, you don't have a {crate} to open", color=yellow)
+        await ctx.reply(embed=error)
+      else:
+        async with ctx.typing():
+          start = discord.Embed(description=f"[C-------- {crates}]", color=green)
+          message = await ctx.reply(embed=start)
+          await asyncio.sleep(1.5)
+          start2 = discord.Embed(description=f"[Co------- {sold}]", color=green)
+          await message.edit(embed=start2)
+          await asyncio.sleep(1.5)
+          start3 = discord.Embed(description=f"[Com------ {spy}]", color=green)
+          await message.edit(embed=start3)
+          await asyncio.sleep(1.5)
+          start4 = discord.Embed(description=f"[Comp----- {tank}]", color=green)
+          await message.edit(embed=start4)
+          await asyncio.sleep(1.5)
+          start5 = discord.Embed(description=f"[Compl---- {res}]", color=green)
+          await message.edit(embed=start5)
+          await asyncio.sleep(1.5)
+          start6 = discord.Embed(description=f"[Comple--- {strike}]", color=green)
+          await message.edit(embed=start6)
+          await asyncio.sleep(1.5)
+          start7 = discord.Embed(description=f"[Complet-- {wall}]", color=green)
+          await message.edit(embed=start7)
+          await asyncio.sleep(1.5)
+          start8 = discord.Embed(description=f"[Complete- {tank2}]", color=green)
+          await message.edit(embed=start8)
+          await asyncio.sleep(1.5)
+          start9 = discord.Embed(description=f"[Completed openning {crates}!]", color=green)
+          await message.edit(embed=start9)
+          await asyncio.sleep(1.5)
+
+          option_s = random.randrange(90,175)
+          rare_list = ["strike", "wall"]
+          option_rare = random.choice(rare_list)
+          option_rare2 = random.randrange(3,4)
+          option_t = random.randrange(4,6)
+          
+          option_r = random.randrange(150,350)
+          option_Spy = random.randrange(3,4)
+          if option_rare == "strike":
+            r_emoji = strike
+            member_data.strikes += int(option_rare2)
+            save_member_data(ctx.author.id, member_data)
+          if option_rare == "wall":
+            r_emoji = wall
+            member_data.wall += int(option_rare2)
+            save_member_data(ctx.author.id, member_data)
+
+          
+          fin = discord.Embed(description=f"Crate Contained:\n-\n{option_r} {res}\n{option_s} {sold}\n{option_t} {tank}\n{option_Spy} {spy}\n{option_rare2} {r_emoji}", color=green)
+          await message.edit(embed=fin)
+
+          #result
+          member_data.soldiers += int(option_s)
+          member_data.tanks += int(option_t)
+          member_data.spy += int(option_Spy)
+          member_data.resources += int(option_r)
+          member_data4.crate -= 1
+
+
+          
+          save_member_data(ctx.author.id, member_data)
+          save_member_data4(ctx.author.id, member_data4)
+        
 
     
       
