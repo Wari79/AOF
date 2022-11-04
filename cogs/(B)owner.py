@@ -18,6 +18,7 @@ ca = "<:ca:1036338258629632020>"
 crate = "<:crate:1036330635238842478>"
 dead = "<:dead:1025878302503739414>"
 spy = "🕵️"
+medal = "🏅"
 data_filename = "data.pickle"
 data_filename4 = "specials"
 green = 0x567d46
@@ -117,6 +118,7 @@ class owner(commands.Cog):
               break
       await message.clear_reactions()
 
+    
 
 
   
@@ -217,7 +219,8 @@ class owner(commands.Cog):
     @commands.is_owner()
     async def give(self, ctx, member:discord.Member):
       member_data = load_member_data(member.id)
-      first = discord.Embed(description=f"What shall I give this commander, general?\n-\nSoldiers {sold}\nTanks {tank}\nRobotic Spy :detective:\nResources {res}\nWall {wall}\nStrikes {strike}", color=green)
+      member_data4 = load_member_data4(member.id)
+      first = discord.Embed(description=f"What shall I give this commander, general?\n-\nSoldiers {sold}\nTanks {tank}\nRobotic Spy :detective:\nResources {res}\nWall {wall}\nStrikes {strike}\nCrate {crate}", color=green)
       await ctx.reply(embed=first)
       msg1 = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id,)
 
@@ -249,6 +252,13 @@ class owner(commands.Cog):
         await member.send(embed=ss3)
         save_member_data(member.id, member_data)
         return
+      elif msg1.content.lower() == "crate":
+        member_data4.crate += int(amount.content)
+        await ctx.reply(embed=complete)
+        ss3 = discord.Embed(description=f"Commander, you were given {amount.content} {crate} from the system.", color=green)
+        await member.send(embed=ss3)
+        save_member_data4(member.id, member_data4)
+        return
       elif msg1.content.lower() == "spy":
         member_data.spy += int(amount.content)
         await ctx.reply(embed=complete)
@@ -279,8 +289,9 @@ class owner(commands.Cog):
       if member == None:
         member = ctx.author
       member_data = load_member_data(member.id)
+      member_data4 = load_member_data4(member.id)
       
-      first = discord.Embed(description=f"What shall take from this user, general?\n-\nSoldiers {sold}\nTanks {tank}\nRobotic Spy :detective:\nResources {res}\nWalls {wall}\nStrike {strike}", color=red)
+      first = discord.Embed(description=f"What shall take from this user, general?\n-\nSoldiers {sold}\nTanks {tank}\nRobotic Spy :detective:\nResources {res}\nWalls {wall}\nStrike {strike}\ncrate {crate}", color=red)
       await ctx.reply(embed=first)
       msg1 = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id,)
 
@@ -296,6 +307,16 @@ class owner(commands.Cog):
         ss1 = discord.Embed(description=f"Commander, you were subtracted {amount.content} {tank} by the system operators.", color=yellow)
         await member.send(embed=ss1)
         save_member_data(member.id, member_data)  
+        return
+
+
+
+      elif msg1.content.lower() == "crate":
+        member_data4.crate -= int(amount.content)
+        await ctx.reply(embed=complete)
+        ss2 = discord.Embed(description=f"Commander, you were subtracted {amount.content} {crate} by the system operators", color=yellow)
+        await member.send(embed=ss2)
+        save_member_data4(member.id, member_data4)
         return
     
       elif msg1.content.lower() == "resources":

@@ -142,7 +142,7 @@ class quest(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
       member_data3 = load_member_data3(message.author.id)
-      if member_data3.s == 150:
+      if member_data3.s >= 150:
         with open("Quests/(B)quest.json") as json_file:
               data = json.load(json_file)
         try:
@@ -162,8 +162,10 @@ class quest(commands.Cog):
             save_member_data2(message.author.id, member_data2)
             reward2 = discord.Embed(description=f"**Quest Completed**\n-\n> You recieved 4 {strike} for completing a quest.", color=green)
             await message.author.send(embed=reward2)
+      else:
+        pass
 
-      if member_data3.r == 150:
+      if member_data3.r >= 150:
         with open("Quests/(C)quest.json") as json_file:
               data = json.load(json_file)
         try:
@@ -184,13 +186,15 @@ class quest(commands.Cog):
             save_member_data2(message.author.id, member_data2)
             reward3 = discord.Embed(description=f"**Quest Completed**\n-\n> You recieved 2 {wall} & 2 {strike} for completing a quest.", color=green)
             await message.author.send(embed=reward3)
+      else:
+        pass
 
 
       if message.channel.id == 939972628205154327:
         member_data = load_member_data(message.author.id)
         member_data.mesg += 1
         save_member_data(message.author.id, member_data)
-        if member_data.mesg == 150:
+        if member_data.mesg >= 150:
           with open("Quests/(A)quest.json") as json_file:
               data = json.load(json_file)
           try:
@@ -212,9 +216,10 @@ class quest(commands.Cog):
             reward = discord.Embed(description=f"**Quest Completed**\n-\n> You recieved 2555 {res} for completing a quest.", color=green)
             await message.author.send(embed=reward)
 
-            pass
-      else:
-        pass
+            return
+        else:
+          pass
+      
 
   
     @commands.command()
@@ -225,28 +230,28 @@ class quest(commands.Cog):
       member_data = load_member_data(ctx.author.id)
       member_data3 = load_member_data3(ctx.author.id)
       
-      if member_data.mesg < 150 and member_data3.s > 150 and member_data.r > 150:
+      if member_data.mesg < 150 and member_data3.s >= 150 and member_data3.r >= 150:
         progres1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` {member_data.mesg}/150 `\nReward: 2555 {res}\n-\n> **Recruit soldiers 150 times**\n{arr} ` Completed ` {comp}\n-\n> **Gain resources 150 times**\n{arr} ` Completed ` {comp}", color=green)
         await ctx.reply(embed=progres1)
         return
         
 
         
-      if member_data.mesg > 150 and member_data3.s < 150 and member_data3.r > 150:
+      if member_data.mesg >= 150 and member_data3.s < 150 and member_data3.r >= 150:
         progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` Completed ` {comp}\n-\n> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 4 {strike}\n-\n> **Gain resources 150 times**\n{arr} ` Completed ` {comp}", color=green)
         await ctx.reply(embed=progress1)
         return
 
 
 
-      if member_data.mesg > 150 and member_data3.s > 150 and member_data3.r < 150:
+      if member_data.mesg >= 150 and member_data3.s >= 150 and member_data3.r < 150:
         progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` Completed ` {comp}\n-\n> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 4 {strike}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}", color=green)
         await ctx.reply(embed=progress1)
         return
 
 
         
-      if member_data.mesg > 150 and member_data3.s > 150 and member_data3.r > 150:
+      if member_data.mesg >= 150 and member_data3.s >= 150 and member_data3.r >= 150:
         progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` Completed ` {comp}\n-\n> **Recruit soldiers 150 times**\n{arr} ` Completed ` {comp}\n-\n> **Gain resources 150 times**\n{arr} ` Completed ` {comp}", color=green)
         await ctx.reply(embed=progress1)
         return
@@ -256,17 +261,17 @@ class quest(commands.Cog):
         await ctx.reply(embed=progress1)
         return
 
-      if member_data.mesg < 150 and member_data3.s < 150 and member_data3.r > 150:
+      if member_data.mesg < 150 and member_data3.s < 150 and member_data3.r >= 150:
         progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` {member_data.mesg}/100 `\nReward: 2555 {res}\n-\n> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 4 {strike}\n-\n> **Gain resources 150 times**\n{arr} ` Completed ` {comp}", color=green)
         await ctx.reply(embed=progress1)
         return
 
-      if member_data.mesg < 150 and member_data3.s > 150 and member_data3.r < 150:
+      if member_data.mesg < 150 and member_data3.s >= 150 and member_data3.r < 150:
         progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` {member_data.mesg}/150 `\nReward: 2555 {res}\n-\n> **Recruit soldiers 150 times**\n{arr} ` Completed ` {comp}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}", color=green)
         await ctx.reply(embed=progress1)
         return
 
-      if member_data.mesg > 150 and member_data3.s < 150 and member_data3.r < 150:
+      if member_data.mesg >= 150 and member_data3.s < 150 and member_data3.r < 150:
         progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` Completed ` {comp}\n-\n> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 4 {strike}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}", color=green)
         await ctx.reply(embed=progress1)
         return

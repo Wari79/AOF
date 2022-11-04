@@ -126,16 +126,17 @@ class shop(commands.Cog):
 
         elif str(reaction) == "<:crate:1036330635238842478>":
           await confirmation.clear_reactions()
-          if member_data5.medals >= 5:
+          if member_data5.medals >= 6:
           # if member_data.resources >= 90:
+            
             dones = discord.Embed(description=f"Congratulations commander! you succesfully crafted **1 Crate** {crates}", color=0x309730)
             dones.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
             await confirmation.edit(embed=dones)
             
               
-            member_data5.medals -= 5
+            member_data5.medals -= 6
             # member_data.resources -= 90
-            member_data4.crates += 1
+            member_data4.crate += 1
             save_member_data4(ctx.author.id, member_data4)
             save_member_data5(ctx.author.id, member_data5)
           else:
@@ -192,7 +193,7 @@ class shop(commands.Cog):
   
         elif str(reaction) == "📋":
           await confirmation.clear_reactions()
-          weapons = discord.Embed(description=f"Tank {tank} = **75 {res}**\nRobotic Spy :detective: = **150** {res}\nWall {wall} = **800** {res}\nStrike {strike} = **1200** {res}\nCrate {crates} = **5** {medal}", color=green)
+          weapons = discord.Embed(description=f"Tank {tank} = **75 {res}**\nRobotic Spy :detective: = **150** {res}\nWall {wall} = **800** {res}\nStrike {strike} = **1200** {res}\nCrate {crates} = **6** {medal}", color=green)
           weapons.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
           await confirmation.edit(embed=weapons)
           ctx.command.reset_cooldown(ctx)
