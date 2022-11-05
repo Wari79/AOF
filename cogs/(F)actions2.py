@@ -3,6 +3,7 @@ from discord.ext import commands
 import os
 import pickle
 import asyncio
+import random
 
 
 sold = "<:Soldier_Buzz:966705306342129704>"
@@ -17,6 +18,9 @@ ca = "<:ca:1036338258629632020>"
 crate = "<:crate:1036330635238842478>"
 medal = "🏅"
 spy = "🕵️"
+ins = "https://media.discordapp.net/attachments/814828851724943361/1038503971532324984/army-troops_2.gif"
+inta = "https://media.discordapp.net/attachments/814828851724943361/1038503994751983707/tanks.gif"
+inw = "https://media.discordapp.net/attachments/814828851724943361/1038503916230414428/wall.gif"
 
 
 
@@ -49,41 +53,117 @@ class actions2(commands.Cog):
         return commands.cooldown(rate, per_sec + 60 * per_min + 3600 * per_hour, type)
 
 
-    # @commands.command()
-    # @commands.guild_only()
-    # async def strike(self, ctx, member:discord.Member):
-    #   member_data4 = load_member_data4(ctx.author.id)
-    #   member_data = load_member_data(member.id)
+    @commands.command()
+    @commands.guild_only()
+    async def strike(self, ctx, member:discord.Member):
+      member_data4 = load_member_data4(ctx.author.id)
+      victim_data = load_member_data(member.id)
+      victim_data4 = load_member_data4(member.id)
+      if member_data4.ca <= 0:
+        error = discord.Embed(title="Insufficient Amount", description=f"Commander, you don't have any available {ca} to launch a Combat Aircraft", color=yellow)
+        await ctx.reply(embed=error)
 
-      
-    #   if member_data4.ca <= 0:
-    #     error = discord.Embed(title="Insufficient Amount", description=f"Commander, you don't have any available {ca} to launch a Combat Aircraft", color=yellow)
-    #     await ctx.reply(embed=error)
-    #   else:
-    #     check1 = discord.Embed(description=f"Commander {ctx.author.name}, are you sure you want to proceed this action? **there will be no cancel option if you continue**", color=yellow)
-    #     checkc = await ctx.send(embed=ground4) 
-    #     await checkc.add_reaction("✅")
-    #     await checkc.add_reaction("❌")
-    #     def check(reaction, user):
-    #       return user == ctx.author
+        
+      else:
+        check1 = discord.Embed(title="Warning",description=f"**Commander {ctx.author.name},**\n-\nAir strikes deal a total of `1000` HP damage to the mentioned comander's base. It will destroy several walls, soldiers, and tanks that user might have. Are you sure you want to proceed this ation on {member.mention}", color=yellow)
+        
+        checkc = await ctx.send(embed=check1) 
+        
+        await checkc.add_reaction("✅")
+        await checkc.add_reaction("❌")
+        def check(reaction, user):
+          return user == ctx.author
 
-    #     reaction = None
-    #     while True:  
-    #       if str(reaction) == "✅":
-    #         await checkc.clear_reactions()
+        reaction = None
+        while True:  
+          if str(reaction) == "✅":
+            await checkc.clear_reactions()
+            if victim_data.wall >= 5:
+              async with ctx.typing():
+                dw = random.randrange(3,5)
+                destroying_walls = discord.Embed(description="Air Striking walls..", color=yellow)
+                destroying_walls.set_image(url=inw)
+                await checkc.edit(embed=destroying_walls)
+                victim_data.wall -= int(dw)
+                await asyncio.sleep(4)
+                member_data4.ca -= 1
+                save_member_data4(ctx.author.id, member_data4)
+                save_member_data(member.id, victim_data)
+            if victim_data.wall < 5:
+              async with ctx.typing():
+                    
+                destroying_walls = discord.Embed(description="Air Striking walls..", color=yellow)
+                destroying_walls.set_image(url=inw)
+                war = await checkc.edit(embed=destroying_walls)
+                victim_data.wall = 0
+                await asyncio.sleep(4) 
+                member_data4.ca -= 1
+                save_member_data4(ctx.author.id, member_data4)
+                save_member_data(member.id, victim_data)
+                
+            if victim_data.tanks >= 45:
+                  
+              dw2 = random.randrange(15,40)
+              destroying_tanks = discord.Embed(description="Air Striking tanks..", color=yellow)
+              destroying_tanks.set_image(url=inta)
+              await checkc.edit(embed=destroying_tanks)
+              victim_data.tanks -= int(dw2)
+              await asyncio.sleep(3)
+              
+              save_member_data(member.id, victim_data)
+
+            if victim_data.tanks < 45:
+              destroying_tanks = discord.Embed(description="Air Striking tanks..", color=yellow)
+              destroying_tanks.set_image(url=inta)
+              await checkc.edit(embed=destroying_tanks)
+              victim_data.tanks = 0
+              await asyncio.sleep(3)
+              
+              save_member_data(member.id, victim_data)
+                  
+            if victim_data.soldiers >= 500:
+              dw3 = random.randrange(250,500)
+              destroying_soldiers = discord.Embed(description="Air Striking soldiers..", color=yellow)
+              destroying_soldiers.set_image(url=ins)
+              await checkc.edit(embed=destroying_soldiers)
+              victim_data.soldiers -= int(dw3)
+              await asyncio.sleep(3)
+              
+              save_member_data(member.id, victim_data)
+
+                    
+            if victim_data.soldiers < 500:
+              destroying_soldiers = discord.Embed(description="Air Striking soldiers..", color=yellow)
+              destroying_soldiers.set_image(url=ins)
+              await checkc.edit(embed=destroying_soldiers)
+              victim_data.soldiers = 0
+              
+              save_member_data(member.id, victim_data)
+              await asyncio.sleep(3)
+
+
+
+
+            finish = discord.Embed(title="Air Striked!", description=f"{member.mention}'s base's status\n-\n{victim_data.soldiers} {sold}\n{victim_data.tanks} {tank}\n{victim_data.wall} {wall}", color=green)
+            await checkc.edit(embed=finish)
+
+            emergency = discord.Embed(title="Emergency", description=f"Commander! you have been air striked!, you now have:\n-\n{victim_data.soldiers} {sold}\n{victim_data.tanks} {tank}\n{victim_data.wall} {wall}", color=red)
+            await member.send(embed=emergency)
+          
+          elif str(reaction) == "❌":
+            await checkc.clear_reactions()
+            cancelled = discord.Embed(description="Cancelled air strikes operation.", color=green)
+            await checkc.edit(embed=cancelled)
             
-            
+            ctx.command.reset_cooldown(ctx)
+            return
 
-
-            
-    #         completed = discord.Embed()
-
-    #       try:
-    #          reaction, user = await self.client.wait_for("reaction_add", timeout=35.0, check=check)
-    #          await war.remove_reaction(reaction, user)
-    #          ctx.command.reset_cooldown(ctx)
-    #       except:
-    #         break
+          try:
+             reaction, user = await self.client.wait_for("reaction_add", timeout=35.0, check=check)
+             await checkc.remove_reaction(reaction, user)
+             ctx.command.reset_cooldown(ctx)
+          except:
+            break
           
 def setup(client):
     client.add_cog(actions2(client))   

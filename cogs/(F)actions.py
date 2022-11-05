@@ -406,11 +406,11 @@ class actions(commands.Cog):
                             
                               
                             
-                                  win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{hp2} {sold}\n{hp2t} {tank}\n{hearts} : `{health2}`", color=0xfbc28d)
+                                  win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{hp1t} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{hp2} {sold}\n{dead} {tank}\n{hearts} : `{health2}`", color=0xfbc28d)
                             
                                   await ctx.send(embed=win)
                             
-                                  winner1 = discord.Embed(title="Attack Failed!", description=F"**Commander {victim.name}** defended the attack with {hp2} {sold} & {hp2t} {tank} left!", color=0xFF0000)
+                                  winner1 = discord.Embed(title="Attack Failed!", description=F"**Commander {victim.name}** defended the attack with {hp2} {sold} left!", color=0xFF0000)
                                   winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
 
                               
@@ -423,7 +423,7 @@ class actions(commands.Cog):
                                   member_data.soldiers -= int(tanks.content)
                                   member_data.tanks -= int(tanks.content)
                                   member_data2.soldiers -= int(hp2) 
-                                  member_data2.tanks -= int(hp2t)
+                                  member_data2.tanks = 0
                                 
                                   member_data.strikes -= 1
                                 

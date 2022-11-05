@@ -3,6 +3,7 @@ from discord.ext import commands
 import os
 import pickle
 import random
+import asyncio
 
 
 
@@ -16,8 +17,10 @@ wall = "<:wall:1006892740375760959>"
 strike = "<:strike:1025877750298452028>" 
 ca = "<:ca:1036338258629632020>"
 crates = "<:crate:1036330635238842478>"
+tree = "https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434"
 medal = "🏅"
 detective = "🕵️"
+scrap = "⚙️"
 
 
 
@@ -56,8 +59,10 @@ class shop(commands.Cog):
       member_data4 = load_member_data4(ctx.author.id)
       member_data5 = load_member_data5(ctx.author.id)
 
-      embed1 = discord.Embed(description=f"What shall we construct, commander?\n-\nTank = <:tank:994712805448093696>\nRobotic spy = 🕵️\nWall = <:wall:1006892740375760959>\nStrike = <:strike:1025877750298452028>\nCrate = {crates}\nItems/Costs = 📋\nCancel = ❌", color=0x309730)
-      embed1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+      embed1 = discord.Embed(description=f"What shall we construct, commander?\n-\nTank = {tank}\nRobotic spy = 🕵️\nWall = {wall}\nStrike = {strike}\nCrate = {crates}\nScrap = {scrap}\nItems/Costs = 📋\nCancel = ❌", color=0x309730)
+
+      
+      embed1.set_footer(icon_url=tree, text="In memory of General Tree")
       
       confirmation = await ctx.reply(embed = embed1)
 
@@ -66,6 +71,8 @@ class shop(commands.Cog):
       await confirmation.add_reaction("<:wall:1006892740375760959>")
       await confirmation.add_reaction("<:strike:1025877750298452028>")
       await confirmation.add_reaction("<:crate:1036330635238842478>")
+      await confirmation.add_reaction("⚙️")
+      await confirmation.add_reaction("<:ca:1036338258629632020>")
       await confirmation.add_reaction("📋")
       await confirmation.add_reaction("❌")
 
@@ -78,45 +85,191 @@ class shop(commands.Cog):
       while True:
       
         if str(reaction) == "<:tank:994712805448093696>":
-          await confirmation.clear_reactions()
-          if member_data.resources >= 75:
-          # if member_data.resources >= 35:
+            await confirmation.clear_reactions()
+            # if member_data.resources >= 35:
 
-            done = discord.Embed(description=f"Congratulations commander! you succesfully crafted **1 tank {tank}**", color=0x309730)
-            done.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-            await confirmation.edit(embed=done)
+            ask = discord.Embed(description=f"How many {tank} are you requesting to construct?", color=yellow)
+
+            await confirmation.edit(embed=ask)
+          
+            amount = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id)
+          
             
-              
-            member_data.resources -= 75
-            # member_data.resources -= 35
-            member_data.tanks += 1
-            save_member_data(ctx.author.id, member_data)
-            
-          else:
-            error = discord.Embed(title="INSUFFICIENT AMOUNT", description=f"Sorry commander, you don't have enough {res} to construct a tank.", color=0xFFD700)
-            error.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-            await confirmation.edit(embed=error)  
-            
-            ctx.command.reset_cooldown(ctx)
+            await confirmation.delete()
+
+
+            calculation = int(amount.content) * 75
+
+            confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {tank} for {calculation} {res}?", color=yellow)
+
+            confirmation22 = await ctx.send(embed=confirmation2)
+
+            await confirmation22.add_reaction("✅")
+            await confirmation22.add_reaction("❌")
+            def check(reaction, user):
+              return user == ctx.author
+
+            reaction = None
+
+            while True:
+              if str(reaction) == "✅":
+                await confirmation22.clear_reactions()
+                if calculation > member_data.resources:
+                  
+                  error = discord.Embed(title="Insufficient Amount", description=f"Sorry commander, you dont have the required resources!\n-\n> **You need: {calculation} {res}**", color=red)
+                  await ctx.send(embed=error)
+                  ctx.command.reset_cooldown(ctx)
+                  return
+                else:
+                  async with ctx.typing():
+                    start = discord.Embed(description=f"[C{tank2}]", color=green)
+                    await confirmation22.edit(embed=start)
+                    await asyncio.sleep(1.5)
+                    start2 = discord.Embed(description=f"[Co{tank2}]", color=green)
+                    await confirmation22.edit(embed=start2)
+                    await asyncio.sleep(1.5)
+                    start3 = discord.Embed(description=f"[Con{tank2}]", color=green)
+                    await confirmation22.edit(embed=start3)
+                    await asyncio.sleep(1.5)
+                    start4 = discord.Embed(description=f"[Cons{tank2}]", color=green)
+                    await confirmation22.edit(embed=start4)
+                    await asyncio.sleep(1.5)
+                    start5 = discord.Embed(description=f"[Const{tank2}]", color=green)
+                    await confirmation22.edit(embed=start5)
+                    await asyncio.sleep(1.5)
+                    start6 = discord.Embed(description=f"[Constr{tank2}]", color=green)
+                    await confirmation22.edit(embed=start6)
+                    await asyncio.sleep(1.5)
+                    start7 = discord.Embed(description=f"[Constru{tank2}]", color=green)
+                    await confirmation22.edit(embed=start7)
+                    await asyncio.sleep(1.5)
+                    start8 = discord.Embed(description=f"[Construc{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start8)
+                    await asyncio.sleep(1.5)
+                    start9 = discord.Embed(description=f"[Construct{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start9)
+                    await asyncio.sleep(1.5)
+                    start10= discord.Embed(description=f"[Constructe{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start10)
+                    await asyncio.sleep(1.5)
+                    start11 = discord.Embed(description=f"[Constructed {tank} !]", color=green)
+                    await confirmation22.edit(embed=start11)
+                    await asyncio.sleep(1.5)
+                  success = discord.Embed(title="Completed Construction", description=f"**Succesfully constructed {amount.content} {tank} for ` {calculation} ` {res}**", color=green)
+                  await confirmation22.delete()
+                  await ctx.reply(embed=success)
+
+                  member_data.resources -= int(calculation)
+                  member_data.tanks += int(amount.content)
+                  save_member_data(ctx.author.id, member_data)
+                  return
+              elif str(reaction) == "❌":
+                
+                await confirmation22.clear_reactions()
+                await confirmation22.delete()
+                cancel = discord.Embed(description="Construction cancelled :white_check_mark:", color=green)
+                await confirmation22.edit(embed=cancel)
+                ctx.command.reset_cooldown(ctx)
+                return
+              try:
+                reaction, user = await self.client.wait_for("reaction_add", timeout=15.0, check=check)
+                await confirmation22.remove_reaction(reaction, user)
+              except:
+                break
+          
+  
                                       
         elif str(reaction) == "🕵️":
-          await confirmation.clear_reactions()
-          if member_data.resources >= 150:
-          # if member_data.resources >= 90:
-            dones = discord.Embed(description=f"Congratulations commander! you succesfully crafted **1 robotic spy** :detective:", color=0x309730)
-            dones.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-            await confirmation.edit(embed=dones)
+            await confirmation.clear_reactions()
+            ask = discord.Embed(description=f"How many {spy} are you requesting to construct?", color=yellow)
+
+            await confirmation.edit(embed=ask)
+          
+            amount = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id)
+          
             
-              
-            member_data.resources -= 150
-            # member_data.resources -= 90
-            member_data.spy += 1
-            save_member_data(ctx.author.id, member_data)
-          else:
-            error = discord.Embed(title="INSUFFICIENT AMOUNT", description=f"Sorry commander, you don't have enough {res} to construct a robotic spy.", color=0xFFD700)
-            error.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-            await confirmation.edit(embed=error)  
-            ctx.command.reset_cooldown(ctx)
+            await confirmation.delete()
+
+
+            calculation = int(amount.content) * 150
+
+            confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {spy} for {calculation} {res}?", color=yellow)
+
+            confirmation22 = await ctx.send(embed=confirmation2)
+
+            await confirmation22.add_reaction("✅")
+            await confirmation22.add_reaction("❌")
+            def check(reaction, user):
+              return user == ctx.author
+
+            reaction = None
+
+            while True:
+              if str(reaction) == "✅":
+                await confirmation22.clear_reactions()
+                if calculation > member_data.resources:
+                  
+                  error = discord.Embed(title="Insufficient Amount", description=f"Sorry commander, you dont have the required resources!\n-\n> **You need: {calculation} {res}**", color=red)
+                  await ctx.send(embed=error)
+                  ctx.command.reset_cooldown(ctx)
+                  return
+                else:
+                  async with ctx.typing():
+                    start = discord.Embed(description=f"[C{tank2}]", color=green)
+                    await confirmation22.edit(embed=start)
+                    await asyncio.sleep(1.5)
+                    start2 = discord.Embed(description=f"[Co{tank2}]", color=green)
+                    await confirmation22.edit(embed=start2)
+                    await asyncio.sleep(1.5)
+                    start3 = discord.Embed(description=f"[Con{tank2}]", color=green)
+                    await confirmation22.edit(embed=start3)
+                    await asyncio.sleep(1.5)
+                    start4 = discord.Embed(description=f"[Cons{tank2}]", color=green)
+                    await confirmation22.edit(embed=start4)
+                    await asyncio.sleep(1.5)
+                    start5 = discord.Embed(description=f"[Const{tank2}]", color=green)
+                    await confirmation22.edit(embed=start5)
+                    await asyncio.sleep(1.5)
+                    start6 = discord.Embed(description=f"[Constr{tank2}]", color=green)
+                    await confirmation22.edit(embed=start6)
+                    await asyncio.sleep(1.5)
+                    start7 = discord.Embed(description=f"[Constru{tank2}]", color=green)
+                    await confirmation22.edit(embed=start7)
+                    await asyncio.sleep(1.5)
+                    start8 = discord.Embed(description=f"[Construc{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start8)
+                    await asyncio.sleep(1.5)
+                    start9 = discord.Embed(description=f"[Construct{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start9)
+                    await asyncio.sleep(1.5)
+                    start10= discord.Embed(description=f"[Constructe{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start10)
+                    await asyncio.sleep(1.5)
+                    start11 = discord.Embed(description=f"[Constructed {spy} !]", color=green)
+                    await confirmation22.edit(embed=start11)
+                    await asyncio.sleep(1.5)
+                  success = discord.Embed(title="Completed Construction", description=f"**Succesfully constructed {amount.content} {spy} for ` {calculation} ` {res}**", color=green)
+                  await confirmation22.delete()
+                  await ctx.reply(embed=success)
+
+                  member_data.resources -= int(calculation)
+                  member_data.spy += int(amount.content)
+                  save_member_data(ctx.author.id, member_data)
+                  return
+              elif str(reaction) == "❌":
+                
+                await confirmation22.clear_reactions()
+                await confirmation22.delete()
+                cancel = discord.Embed(description="Construction cancelled :white_check_mark:", color=green)
+                await confirmation22.edit(embed=cancel)
+                ctx.command.reset_cooldown(ctx)
+                return
+              try:
+                reaction, user = await self.client.wait_for("reaction_add", timeout=15.0, check=check)
+                await confirmation22.remove_reaction(reaction, user)
+              except:
+                break
+          
 
 
 
@@ -158,48 +311,373 @@ class shop(commands.Cog):
             
 
         elif str(reaction) == "<:wall:1006892740375760959>":
-          await confirmation.clear_reactions()
-          if member_data.resources >= 800:
-          # if member_data.resources >= 550:
-            donew = discord.Embed(description=f"Congratulations commander! you succesfully crafted **1 wall** {wall}", color=0x309730)
-            donew.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-            await confirmation.edit(embed=donew)
+            await confirmation.clear_reactions()
+            ask = discord.Embed(description=f"How many {wall} are you requesting to construct?", color=yellow)
 
+            await confirmation.edit(embed=ask)
+          
+            amount = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id)
+          
             
-              
-            member_data.resources -= 800
-            # member_data.resources -= 550
-            member_data.wall += 1
-            save_member_data(ctx.author.id, member_data)
-          else:
-            error = discord.Embed(title="INSUFFICIENT AMOUNT", description=f"Sorry commander, you don't have enough {res} to construct a wall.", color=0xFFD700)
-            await confirmation.edit(embed=error)  
-            ctx.command.reset_cooldown(ctx)   
+            await confirmation.delete()
+
+
+            calculation = int(amount.content) * 880
+
+            confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {wall} for {calculation} {res}?", color=yellow)
+
+            confirmation22 = await ctx.send(embed=confirmation2)
+
+            await confirmation22.add_reaction("✅")
+            await confirmation22.add_reaction("❌")
+            def check(reaction, user):
+              return user == ctx.author
+
+            reaction = None
+
+            while True:
+              if str(reaction) == "✅":
+                await confirmation22.clear_reactions()
+                if calculation > member_data.resources:
+                  
+                  error = discord.Embed(title="Insufficient Amount", description=f"Sorry commander, you dont have the required resources!\n-\n> **You need: {calculation} {res}**", color=red)
+                  await ctx.send(embed=error)
+                  ctx.command.reset_cooldown(ctx)
+                  return
+                else:
+                  async with ctx.typing():
+                    start = discord.Embed(description=f"[C{tank2}]", color=green)
+                    await confirmation22.edit(embed=start)
+                    await asyncio.sleep(1.5)
+                    start2 = discord.Embed(description=f"[Co{tank2}]", color=green)
+                    await confirmation22.edit(embed=start2)
+                    await asyncio.sleep(1.5)
+                    start3 = discord.Embed(description=f"[Con{tank2}]", color=green)
+                    await confirmation22.edit(embed=start3)
+                    await asyncio.sleep(1.5)
+                    start4 = discord.Embed(description=f"[Cons{tank2}]", color=green)
+                    await confirmation22.edit(embed=start4)
+                    await asyncio.sleep(1.5)
+                    start5 = discord.Embed(description=f"[Const{tank2}]", color=green)
+                    await confirmation22.edit(embed=start5)
+                    await asyncio.sleep(1.5)
+                    start6 = discord.Embed(description=f"[Constr{tank2}]", color=green)
+                    await confirmation22.edit(embed=start6)
+                    await asyncio.sleep(1.5)
+                    start7 = discord.Embed(description=f"[Constru{tank2}]", color=green)
+                    await confirmation22.edit(embed=start7)
+                    await asyncio.sleep(1.5)
+                    start8 = discord.Embed(description=f"[Construc{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start8)
+                    await asyncio.sleep(1.5)
+                    start9 = discord.Embed(description=f"[Construct{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start9)
+                    await asyncio.sleep(1.5)
+                    start10= discord.Embed(description=f"[Constructe{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start10)
+                    await asyncio.sleep(1.5)
+                    start11 = discord.Embed(description=f"[Constructed {wall} !]", color=green)
+                    await confirmation22.edit(embed=start11)
+                    await asyncio.sleep(1.5)
+                  success = discord.Embed(title="Completed Construction", description=f"**Succesfully constructed {amount.content} {wall} for ` {calculation} ` {res}**", color=green)
+                  await confirmation22.delete()
+                  await ctx.reply(embed=success)
+
+                  member_data.resources -= int(calculation)
+                  member_data.wall += int(amount.content)
+                  save_member_data(ctx.author.id, member_data)
+                  return
+              elif str(reaction) == "❌":
+                
+                await confirmation22.clear_reactions()
+                await confirmation22.delete()
+                cancel = discord.Embed(description="Construction cancelled :white_check_mark:", color=green)
+                await confirmation22.edit(embed=cancel)
+                ctx.command.reset_cooldown(ctx)
+                return
+              try:
+                reaction, user = await self.client.wait_for("reaction_add", timeout=15.0, check=check)
+                await confirmation22.remove_reaction(reaction, user)
+                
+              except:
+                break  
         elif str(reaction) == "<:strike:1025877750298452028>":
-          await confirmation.clear_reactions()
-          if member_data.resources >= 1200:
-          # if member_data.resources >= 735:
-            dones = discord.Embed(description=f"Congratulations commander! you succesfully recieved **1 strike** {strike}", color=0x309730)
-            dones.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-            await confirmation.edit(embed=dones)
+            await confirmation.clear_reactions()
+            ask = discord.Embed(description=f"How many {strike} are you requesting to construct?", color=yellow)
 
+            await confirmation.edit(embed=ask)
+          
+            amount = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id)
+          
             
-              
-            member_data.resources -= 1200
-            # member_data.resources -= 735
-            member_data.strikes += 1
-            save_member_data(ctx.author.id, member_data)
-          else:
-            error = discord.Embed(title="INSUFFICIENT AMOUNT", description=f"Sorry commander, you don't have enough {res} to construct a strike.", color=0xFFD700)
-            error.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-            await confirmation.edit(embed=error)  
-            ctx.command.reset_cooldown(ctx)
+            await confirmation.delete()
+
+
+            calculation = int(amount.content) * 1200
+
+            confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {strike} for {calculation} {res}?", color=yellow)
+
+            confirmation22 = await ctx.send(embed=confirmation2)
+
+            await confirmation22.add_reaction("✅")
+            await confirmation22.add_reaction("❌")
+            def check(reaction, user):
+              return user == ctx.author
+
+            reaction = None
+
+            while True:
+              if str(reaction) == "✅":
+                await confirmation22.clear_reactions()
+                if calculation > member_data.resources:
+                  
+                  error = discord.Embed(title="Insufficient Amount", description=f"Sorry commander, you dont have the required resources!\n-\n> **You need: {calculation} {res}**", color=red)
+                  await ctx.send(embed=error)
+                  ctx.command.reset_cooldown(ctx)
+                  return
+                else:
+                  async with ctx.typing():
+                    start = discord.Embed(description=f"[C{tank2}]", color=green)
+                    await confirmation22.edit(embed=start)
+                    await asyncio.sleep(1.5)
+                    start2 = discord.Embed(description=f"[Co{tank2}]", color=green)
+                    await confirmation22.edit(embed=start2)
+                    await asyncio.sleep(1.5)
+                    start3 = discord.Embed(description=f"[Con{tank2}]", color=green)
+                    await confirmation22.edit(embed=start3)
+                    await asyncio.sleep(1.5)
+                    start4 = discord.Embed(description=f"[Cons{tank2}]", color=green)
+                    await confirmation22.edit(embed=start4)
+                    await asyncio.sleep(1.5)
+                    start5 = discord.Embed(description=f"[Const{tank2}]", color=green)
+                    await confirmation22.edit(embed=start5)
+                    await asyncio.sleep(1.5)
+                    start6 = discord.Embed(description=f"[Constr{tank2}]", color=green)
+                    await confirmation22.edit(embed=start6)
+                    await asyncio.sleep(1.5)
+                    start7 = discord.Embed(description=f"[Constru{tank2}]", color=green)
+                    await confirmation22.edit(embed=start7)
+                    await asyncio.sleep(1.5)
+                    start8 = discord.Embed(description=f"[Construc{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start8)
+                    await asyncio.sleep(1.5)
+                    start9 = discord.Embed(description=f"[Construct{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start9)
+                    await asyncio.sleep(1.5)
+                    start10= discord.Embed(description=f"[Constructe{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start10)
+                    await asyncio.sleep(1.5)
+                    start11 = discord.Embed(description=f"[Constructed {strike} !]", color=green)
+                    await confirmation22.edit(embed=start11)
+                    await asyncio.sleep(1.5)
+                  success = discord.Embed(title="Completed Construction", description=f"**Succesfully constructed {amount.content} {strike} for ` {calculation} ` {res}**", color=green)
+                  await confirmation22.delete()
+                  await ctx.reply(embed=success)
+
+                  member_data.resources -= int(calculation)
+                  member_data.strikes += int(amount.content)
+                  save_member_data(ctx.author.id, member_data)
+                  return
+              elif str(reaction) == "❌":
+                
+                await confirmation22.clear_reactions()
+                await confirmation22.delete()
+                cancel = discord.Embed(description="Construction cancelled :white_check_mark:", color=green)
+                await confirmation22.edit(embed=cancel)
+                ctx.command.reset_cooldown(ctx)
+                return
+              try:
+                reaction, user = await self.client.wait_for("reaction_add", timeout=15.0, check=check)
+                await confirmation22.remove_reaction(reaction, user)
+              except:
+                break
+          
           
 
   
+        elif str(reaction) == "<:ca:1036338258629632020>":
+            await confirmation.clear_reactions()
+            ask = discord.Embed(description=f"How many {ca} are you requesting to construct?", color=yellow)
+
+            await confirmation.edit(embed=ask)
+          
+            amount = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id)
+          
+            
+            await confirmation.delete()
+
+
+            calculation = int(amount.content) * 3
+
+            confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {ca} for {calculation} {scrap}?", color=yellow)
+
+            confirmation22 = await ctx.send(embed=confirmation2)
+
+            await confirmation22.add_reaction("✅")
+            await confirmation22.add_reaction("❌")
+            def check(reaction, user):
+              return user == ctx.author
+
+            reaction = None
+
+            while True:
+              if str(reaction) == "✅":
+                await confirmation22.clear_reactions()
+                if calculation > member_data4.scrap:
+                  
+                  error = discord.Embed(title="Insufficient Amount", description=f"Sorry commander, you dont have the required resources!\n-\n> **You need: {calculation} {scrap}**", color=red)
+                  await ctx.send(embed=error)
+                  ctx.command.reset_cooldown(ctx)
+                  return
+                else:
+                  async with ctx.typing():
+                    start = discord.Embed(description=f"[C{tank2}]", color=green)
+                    await confirmation22.edit(embed=start)
+                    await asyncio.sleep(1.5)
+                    start2 = discord.Embed(description=f"[Co{tank2}]", color=green)
+                    await confirmation22.edit(embed=start2)
+                    await asyncio.sleep(1.5)
+                    start3 = discord.Embed(description=f"[Con{tank2}]", color=green)
+                    await confirmation22.edit(embed=start3)
+                    await asyncio.sleep(1.5)
+                    start4 = discord.Embed(description=f"[Cons{tank2}]", color=green)
+                    await confirmation22.edit(embed=start4)
+                    await asyncio.sleep(1.5)
+                    start5 = discord.Embed(description=f"[Const{tank2}]", color=green)
+                    await confirmation22.edit(embed=start5)
+                    await asyncio.sleep(1.5)
+                    start6 = discord.Embed(description=f"[Constr{tank2}]", color=green)
+                    await confirmation22.edit(embed=start6)
+                    await asyncio.sleep(1.5)
+                    start7 = discord.Embed(description=f"[Constru{tank2}]", color=green)
+                    await confirmation22.edit(embed=start7)
+                    await asyncio.sleep(1.5)
+                    start8 = discord.Embed(description=f"[Construc{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start8)
+                    await asyncio.sleep(1.5)
+                    start9 = discord.Embed(description=f"[Construct{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start9)
+                    await asyncio.sleep(1.5)
+                    start10= discord.Embed(description=f"[Constructe{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start10)
+                    await asyncio.sleep(1.5)
+                    start11 = discord.Embed(description=f"[Constructed {ca} !]", color=green)
+                    await confirmation22.edit(embed=start11)
+                    await asyncio.sleep(1.5)
+                  success = discord.Embed(title="Completed Construction", description=f"**Succesfully constructed {amount.content} {ca} for ` {calculation} ` {scrap}**", color=green)
+                  await confirmation22.delete()
+                  await ctx.reply(embed=success)
+
+                  member_data4.scrap -= int(calculation)
+                  member_data4.ca += int(amount.content)
+                  save_member_data(ctx.author.id, member_data)
+                  return
+              elif str(reaction) == "❌":
+                
+                await confirmation22.clear_reactions()
+                await confirmation22.delete()
+                cancel = discord.Embed(description="Construction cancelled :white_check_mark:", color=green)
+                await confirmation22.edit(embed=cancel)
+                ctx.command.reset_cooldown(ctx)
+                return
+              try:
+                reaction, user = await self.client.wait_for("reaction_add", timeout=15.0, check=check)
+                await confirmation22.remove_reaction(reaction, user)
+              except:
+                break
+        elif str(reaction) == "⚙️":
+            await confirmation.clear_reactions()
+            ask = discord.Embed(description=f"How many {scrap} are you requesting to construct?", color=yellow)
+
+            await confirmation.edit(embed=ask)
+          
+            amount = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id)
+          
+            
+            await confirmation.delete()
+
+
+            calculation = int(amount.content) * 850
+
+            confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {scrap} for {calculation} {res}?", color=yellow)
+
+            confirmation22 = await ctx.send(embed=confirmation2)
+
+            await confirmation22.add_reaction("✅")
+            await confirmation22.add_reaction("❌")
+            def check(reaction, user):
+              return user == ctx.author
+
+            reaction = None
+
+            while True:
+              if str(reaction) == "✅":
+                await confirmation22.clear_reactions()
+                if calculation > member_data.resources:
+                  
+                  error = discord.Embed(title="Insufficient Amount", description=f"Sorry commander, you dont have the required resources!\n-\n> **You need: {calculation} {res}**", color=red)
+                  await ctx.send(embed=error)
+                  ctx.command.reset_cooldown(ctx)
+                  return
+                else:
+                  async with ctx.typing():
+                    start = discord.Embed(description=f"[C{tank2}]", color=green)
+                    await confirmation22.edit(embed=start)
+                    await asyncio.sleep(1.5)
+                    start2 = discord.Embed(description=f"[Co{tank2}]", color=green)
+                    await confirmation22.edit(embed=start2)
+                    await asyncio.sleep(1.5)
+                    start3 = discord.Embed(description=f"[Con{tank2}]", color=green)
+                    await confirmation22.edit(embed=start3)
+                    await asyncio.sleep(1.5)
+                    start4 = discord.Embed(description=f"[Cons{tank2}]", color=green)
+                    await confirmation22.edit(embed=start4)
+                    await asyncio.sleep(1.5)
+                    start5 = discord.Embed(description=f"[Const{tank2}]", color=green)
+                    await confirmation22.edit(embed=start5)
+                    await asyncio.sleep(1.5)
+                    start6 = discord.Embed(description=f"[Constr{tank2}]", color=green)
+                    await confirmation22.edit(embed=start6)
+                    await asyncio.sleep(1.5)
+                    start7 = discord.Embed(description=f"[Constru{tank2}]", color=green)
+                    await confirmation22.edit(embed=start7)
+                    await asyncio.sleep(1.5)
+                    start8 = discord.Embed(description=f"[Construc{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start8)
+                    await asyncio.sleep(1.5)
+                    start9 = discord.Embed(description=f"[Construct{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start9)
+                    await asyncio.sleep(1.5)
+                    start10= discord.Embed(description=f"[Constructe{tank2}]", color=green)    
+                    await confirmation22.edit(embed=start10)
+                    await asyncio.sleep(1.5)
+                    start11 = discord.Embed(description=f"[Constructed {scrap} !]", color=green)
+                    await confirmation22.edit(embed=start11)
+                    await asyncio.sleep(1.5)
+                  success = discord.Embed(title="Completed Construction", description=f"**Succesfully constructed {amount.content} {scrap} for ` {calculation} ` {res}**", color=green)
+                  await confirmation22.delete()
+                  await ctx.reply(embed=success)
+
+                  member_data.resources -= int(calculation)
+                  member_data4.scrap += int(amount.content)
+                  save_member_data(ctx.author.id, member_data)
+                  return
+              elif str(reaction) == "❌":
+                
+                await confirmation22.clear_reactions()
+                await confirmation22.delete()
+                cancel = discord.Embed(description="Construction cancelled :white_check_mark:", color=green)
+                await confirmation22.edit(embed=cancel)
+                ctx.command.reset_cooldown(ctx)
+                return
+              try:
+                reaction, user = await self.client.wait_for("reaction_add", timeout=15.0, check=check)
+                await confirmation22.remove_reaction(reaction, user)
+              except:
+                break
         elif str(reaction) == "📋":
           await confirmation.clear_reactions()
-          weapons = discord.Embed(description=f"Tank {tank} = **75 {res}**\nRobotic Spy :detective: = **150** {res}\nWall {wall} = **800** {res}\nStrike {strike} = **1200** {res}\nCrate {crates} = **6** {medal}", color=green)
+          weapons = discord.Embed(description=f"Tank {tank} = **75 {res}**\n-\nRobotic Spy :detective: = **150** {res}\n-\nWall {wall} = **800** {res}\n-\nStrike {strike} = **1200** {res}\n-\nCrate {crates} = **6** {medal}\n-\nScrap {scrap} = **850**\n-\nCA/Combat Aircraft {ca} = **3 {scrap}**", color=green)
           weapons.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
           await confirmation.edit(embed=weapons)
           ctx.command.reset_cooldown(ctx)
@@ -216,7 +694,7 @@ class shop(commands.Cog):
               await confirmation.remove_reaction(reaction, user)
         except:
                break
-      await confirmation.clear_reactions()
+      
 
 
 
