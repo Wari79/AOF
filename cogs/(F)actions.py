@@ -20,9 +20,9 @@ spy = "🕵️"
 
 
 
-data_filename = "data.pickle"
-data_filename4 = "specials"
-data_filename5 = "medals"
+data_filename = "currency files/data.pickle"
+data_filename4 = "currency files/specials"
+data_filename5 = "currency files/medals"
 green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700
@@ -90,300 +90,315 @@ class actions(commands.Cog):
                 member_data2.wall -= 1
                 save_member_data(ctx.author.id, member_data)
                 save_member_data(victim.id, member_data2)
-              else:   
-                initiation = discord.Embed(description="__**Initiating the attack sequence**__", color=0x567d46)
-                initiation1 = await ctx.reply(embed=initiation)
-                async with ctx.typing():
-                  await asyncio.sleep(3)
+              else:  
 
-                initiate = discord.Embed(description=f"**How many soldiers are you attacking with?** (You currently have {member_data.soldiers} {sold})", color=0x567d46)  
+                confirm_it = discord.Embed(title="Warning", description=f"Continuing this command will subtract 1 {strike} from your base, are you sure you will continue?", color=yellow)
+                firm = await ctx.reply(embed=confirm_it)
 
-                await initiation1.edit(embed=initiate)
-                soldiers = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id,)
+                await firm.add_reaction("✅")
+                await firm.add_reaction("❌")
+
+                def check(reaction, user):
+                  return user == ctx.author
+
+                reaction = None
+                while True:  
+                  if str(reaction) == "✅":
+                    await firm.clear_reactions()
+                    confirmed = discord.Embed(description="Confirmed, proceeding with attack command..", color=green)
+                    await firm.edit(embed=confirmed, delete_after=10.0)
+                    initiation = discord.Embed(description="__**Initiating the attack sequence**__", color=0x567d46)
+                    initiation1 = await ctx.reply(embed=initiation)
+                    async with ctx.typing():
+                      await asyncio.sleep(3)
+                    initiate = discord.Embed(description=f"**How many soldiers are you attacking with?** (You currently have {member_data.soldiers} {sold})", color=0x567d46)  
+
+                    await initiation1.edit(embed=initiate)
+                    soldiers = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id,)
 
   
-                if member_data.soldiers >= int(soldiers.content):  
-                  war1 = discord.Embed(description=f"**Going with {soldiers.content} soldiers. How many tanks you attacking with?** (You currently have {member_data.tanks} {tank})", color=0x567d46)  
+                    if member_data.soldiers >= int(soldiers.content):  
+                      war1 = discord.Embed(description=f"**Going with {soldiers.content} soldiers. How many tanks you attacking with?** (You currently have {member_data.tanks} {tank})", color=0x567d46)  
 
-                  await ctx.send(embed=war1)
+                      await ctx.send(embed=war1)
     
-                  tanks = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id,)
+                      tanks = await self.client.wait_for("message",check=lambda m: m.author == ctx.author and m.channel.id == ctx.channel.id,)
     
     
-                  if member_data.tanks >= int(tanks.content):
-                      war2 = discord.Embed(description=f"**Going with {tanks.content} tanks.**", color=0x567d46)
+                      if member_data.tanks >= int(tanks.content):
+                          war2 = discord.Embed(description=f"**Going with {tanks.content} tanks.**", color=0x567d46)
 
-                      await ctx.send(embed=war2)
+                          await ctx.send(embed=war2)
 
 
                 
               
             
         
-                      powert1 = int(tanks.content) * 10
-                      powert2 = member_data2.tanks * 10
+                          powert1 = int(tanks.content) * 10
+                          powert2 = member_data2.tanks * 10
 
                 
-                      hp1r = int(soldiers.content) + powert1
-                      hp2r = member_data2.soldiers + powert2
-                      hp1t = int(tanks.content) - member_data2.tanks
-                      hp2t = member_data2.tanks - int(tanks.content)
+                          hp1r = int(soldiers.content) + powert1
+                          hp2r = member_data2.soldiers + powert2
+                          hp1t = int(tanks.content) - member_data2.tanks
+                          hp2t = member_data2.tanks - int(tanks.content)
 
-                      ground3 = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{soldiers.content} {sold}\n{tanks.content} {tank}\n{hearts} : `{hp1r}`\n**__Commander {victim.name}'s Defence__**\n{member_data2.soldiers} {sold}\n{member_data2.tanks} {tank}\n{hearts} : `{hp2r}`", color=0xfbc28d)
-                      await ctx.send(embed=ground3)
+                          ground3 = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{soldiers.content} {sold}\n{tanks.content} {tank}\n{hearts} : `{hp1r}`\n**__Commander {victim.name}'s Defence__**\n{member_data2.soldiers} {sold}\n{member_data2.tanks} {tank}\n{hearts} : `{hp2r}`", color=0xfbc28d)
+                          await ctx.send(embed=ground3)
 
-                      ground4 = discord.Embed(description="Not too late to leave with your troops commander, are you sure you want it bloody?", color=0xfbc28d)
-                      war = await ctx.send(embed=ground4) 
+                          ground4 = discord.Embed(description="Not too late to leave with your troops commander, are you sure you want it bloody?", color=0xfbc28d)
+                          war = await ctx.send(embed=ground4) 
               
             
-                      await war.add_reaction("⚔️")
-                      await war.add_reaction("❌")
+                          await war.add_reaction("⚔️")
+                          await war.add_reaction("❌")
 
-                      def check(reaction, user):
-                        return user == ctx.author
+                          def check(reaction, user):
+                            return user == ctx.author
 
-                      reaction = None
-                      while True:  
-                        if str(reaction) == "⚔️":
-                          await war.clear_reactions()
+                          reaction = None
+                          while True:  
+                            if str(reaction) == "⚔️":
+                              await war.clear_reactions()
                       
-                          #definers    
-                          hp1 = int(soldiers.content) - member_data2.soldiers 
-                          hp2 = member_data2.soldiers - int(soldiers.content)
-                          health1 = hp1 + powert1 - powert2
-                          health2 = hp2 + powert2 - powert1
+                              #definers    
+                              hp1 = int(soldiers.content) - member_data2.soldiers 
+                              hp2 = member_data2.soldiers - int(soldiers.content)
+                              health1 = hp1 + powert1 - powert2
+                              health2 = hp2 + powert2 - powert1
 
-                          async with ctx.typing():
-                            anas = discord.Embed(description="Analyzing Attack Results", color=0xfbc28d)
+                              async with ctx.typing():
+                                anas = discord.Embed(description="Analyzing Attack Results", color=0xfbc28d)
                         
-                            anal = await ctx.send(embed=anas)
-                            anas2 = discord.Embed(description="⚔️ Analyzing Attack Results ⚔️", color=0xfbc28d)
-                            await asyncio.sleep(2)
-                            await anal.edit(embed=anas2)
-                            anas3 = discord.Embed(description=":shield: ⚔️ Gathering Intel ⚔️ :shield:", color=0xfbc28d)
-                            await asyncio.sleep(2)
-                            await anal.edit(embed=anas3)
-                            anas4 = discord.Embed(description="⚔️ :shield: ⚔️ Collecting *Dead* Bodies ⚔️ :shield: ⚔️", color=0xfbc28d)
-                            await asyncio.sleep(2)
-                            await anal.edit(embed=anas4)
-                            anas5 = discord.Embed(description="⚔️ :shield: ⚔️ Collecting *Dead* Bodies ⚔️ :shield: ⚔️", color=0xfbc28d)
-                            await asyncio.sleep(2)
-                            await anal.edit(embed=anas5)
-                            anas6 = discord.Embed(description="⚔️ :shield: ⚔️ Finalizing Calculations ⚔️ :shield: ⚔️", color=0xfbc28d)
-                            await asyncio.sleep(2)
-                            await anal.edit(embed=anas6)
-                            await asyncio.sleep(2)
+                                anal = await ctx.send(embed=anas)
+                                anas2 = discord.Embed(description="⚔️ Analyzing Attack Results ⚔️", color=0xfbc28d)
+                                await asyncio.sleep(2)
+                                await anal.edit(embed=anas2)
+                                anas3 = discord.Embed(description=":shield: ⚔️ Gathering Intel ⚔️ :shield:", color=0xfbc28d)
+                                await asyncio.sleep(2)
+                                await anal.edit(embed=anas3)
+                                anas4 = discord.Embed(description="⚔️ :shield: ⚔️ Collecting *Dead* Bodies ⚔️ :shield: ⚔️", color=0xfbc28d)
+                                await asyncio.sleep(2)
+                                await anal.edit(embed=anas4)
+                                anas5 = discord.Embed(description="⚔️ :shield: ⚔️ Collecting *Dead* Bodies ⚔️ :shield: ⚔️", color=0xfbc28d)
+                                await asyncio.sleep(2)
+                                await anal.edit(embed=anas5)
+                                anas6 = discord.Embed(description="⚔️ :shield: ⚔️ Finalizing Calculations ⚔️ :shield: ⚔️", color=0xfbc28d)
+                                await asyncio.sleep(2)
+                                await anal.edit(embed=anas6)
+                                await asyncio.sleep(2)
 
-                          if hp1r > hp2r:
+                              if hp1r > hp2r:
 
-                            if hp1t < hp2t:
-                              hp1t = 0
+                                if hp1t < hp2t:
+                                  hp1t = 0
                             
-                              hpa = hp1 - hp2t * 10
-                              half2 = member_data2.resources - hp1 * 2 
-                              result = hp2t * 10 + member_data2.soldiers
-                              half3 = hp1 * 2 + hp1t * 6
+                                  hpa = hp1 - hp2t * 10
+                                  half2 = member_data2.resources - hp1 * 2 
+                                  result = hp2t * 10 + member_data2.soldiers
+                                  half3 = hp1 * 2 + hp1t * 6
                             
-                              win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{hpa} {sold}\n{dead} {tank}\n{hearts} : `{health1}`\n**__Commander {victim.name}'s Defence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`", color=0xfbc28d)
+                                  win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{hpa} {sold}\n{dead} {tank}\n{hearts} : `{health1}`\n**__Commander {victim.name}'s Defence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`", color=0xfbc28d)
                             
-                              await ctx.send(embed=win)
+                                  await ctx.send(embed=win)
                             
-                              winner1 = discord.Embed(title="Attack Completed Successfully", description=F"**Commander {ctx.author.name}** wins the battle with {hpa} {sold} left!", color=0x567d46)
+                                  winner1 = discord.Embed(title="Attack Completed Successfully", description=F"**Commander {ctx.author.name}** wins the battle with {hpa} {sold} left!", color=0x567d46)
                             
-                              if half2 <= 0:
-                                winner1.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
-                                winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-                                await ctx.send(embed=winner1)
-                                member_data.resources += member_data2.resources
-                                member_data.strikes -= 1
-                                member_data2.soldiers = 0 
-                                member_data.soldiers -= int(result)
-                                member_data.tanks -= int(tanks.content)
-                                member_data2.tanks = 0
-                                member_data2.resources = 0
-                                member_data5.medals += 1
-                                save_member_data5(ctx.author.id, member_data5)
-                                save_member_data(ctx.author.id, member_data)
-                                save_member_data(victim.id, member_data2)
-                                emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
-                                await victim.send(embed=emergency3)
+                                  if half2 <= 0:
+                                    winner1.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
+                                    winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                    await ctx.send(embed=winner1)
+                                    member_data.resources += member_data2.resources
+                                    member_data.strikes -= 1
+                                    member_data2.soldiers = 0 
+                                    member_data.soldiers -= int(result)
+                                    member_data.tanks -= int(tanks.content)
+                                    member_data2.tanks = 0
+                                    member_data2.resources = 0
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
+                                    save_member_data(ctx.author.id, member_data)
+                                    save_member_data(victim.id, member_data2)
+                                    emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
+                                    await victim.send(embed=emergency3)
                                   
                                   
-                                return
-                              else:
-                                member_data2.resources -= int(round(half3))
-                                member_data.soldiers -= int(result)
-                                member_data.tanks -= int(tanks.content)
-                                member_data2.soldiers = 0 
-                                member_data2.tanks = 0
-                                member_data.resources += int(round(half3))
-                                member_data.strikes -= 1
-                                member_data5.medals += 1
-                                save_member_data5(ctx.author.id, member_data5)
-                                save_member_data(ctx.author.id, member_data)
-                                save_member_data(victim.id, member_data2)
+                                    return
+                                  else:
+                                    member_data2.resources -= int(round(half3))
+                                    member_data.soldiers -= int(result)
+                                    member_data.tanks -= int(tanks.content)
+                                    member_data2.soldiers = 0 
+                                    member_data2.tanks = 0
+                                    member_data.resources += int(round(half3))
+                                    member_data.strikes -= 1
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
+                                    save_member_data(ctx.author.id, member_data)
+                                    save_member_data(victim.id, member_data2)
                               
 
-                                winner1.add_field(name="__Rewards:__", value=f"{round(half2)} {res}")
-                                winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-                                await ctx.send(embed=winner1)
-                                emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
-                                await victim.send(embed=emergency3)
-                                return
+                                    winner1.add_field(name="__Rewards:__", value=f"{round(half2)} {res}")
+                                    winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                    await ctx.send(embed=winner1)
+                                    emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
+                                    await victim.send(embed=emergency3)
+                                    return
 
 
 
 
 
-                            if hp1 < hp2:
-                              hp1 = 0
+                                if hp1 < hp2:
+                                  hp1 = 0
                             
-                              hpa_f = hp2 / 10 # 10 / 10
-                              hpa = int(tanks.content) - member_data2.tanks - hpa_f
+                                  hpa_f = hp2 / 10 # 10 / 10
+                                  hpa = int(tanks.content) - member_data2.tanks - hpa_f
                               
-                              killerz = member_data2.resources - hpa * 6
-                              killer = hpa * 6 
+                                  killerz = member_data2.resources - hpa * 6
+                                  killer = hpa * 6 
 
-                              final =  member_data2.tanks - hp2t + hp2t + hp2 / 10
+                                  final =  member_data2.tanks - hp2t + hp2t + hp2 / 10
                               
                               
                              
                             
-                              win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{int(round(hpa))} {tank}\n{hearts} : `{health1}`\n**__Commander {victim.name}'s Defence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`", color=0xfbc28d)
+                                  win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{int(round(hpa))} {tank}\n{hearts} : `{health1}`\n**__Commander {victim.name}'s Defence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`", color=0xfbc28d)
                             
-                              await ctx.send(embed=win)
+                                  await ctx.send(embed=win)
                             
-                              winner1 = discord.Embed(title="Attack Completed Successfully", description=F"**Commander {ctx.author.name}** wins the battle with {round(hpa)} {tank} left!", color=0x567d46)
+                                  winner1 = discord.Embed(title="Attack Completed Successfully", description=F"**Commander {ctx.author.name}** wins the battle with {round(hpa)} {tank} left!", color=0x567d46)
                             
-                              if killerz <= 0:
-                                winner1.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
-                                winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-                                await ctx.send(embed=winner1)
-                                member_data.resources += member_data2.resources
-                                member_data.strikes -= 1
-                                member_data2.soldiers = 0 
+                                  if killerz <= 0:
+                                    winner1.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
+                                    winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                    await ctx.send(embed=winner1)
+                                    member_data.resources += member_data2.resources
+                                    member_data.strikes -= 1
+                                    member_data2.soldiers = 0 
+                                    member_data.soldiers -= int(soldiers.content)
+                                    member_data.tanks -= int(round(final))
+                                    member_data2.tanks = 0
+                                    member_data2.resources = 0
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
+                                    save_member_data(ctx.author.id, member_data)
+                                    save_member_data(victim.id, member_data2)
+                                    emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
+                                    await victim.send(embed=emergency3)
+                                  
+                                  
+                                    return
+                                  else:
+                                    member_data2.resources -= int(round(killer))
+                                    member_data.soldiers -= int(tanks.content)
+                                    member_data.tanks -= int(round(final))
+                                    member_data2.soldiers = 0 
+                                    member_data2.tanks = 0
+                                    member_data.resources += int(round(killer))
+                                    member_data.strikes -= 1
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
+                                    save_member_data(ctx.author.id, member_data)
+                                    save_member_data(victim.id, member_data2)
+                              
+
+                                    winner1.add_field(name="__Rewards:__", value=f"{round(killer)} {res}")
+                                    winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                    await ctx.send(embed=winner1)
+                                    emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
+                                    await victim.send(embed=emergency3)
+                                    return
+                                if hp1t > hp2t:
+                            
+
+                                  half2 = member_data2.resources - hp1 * 2 + hp1t * 6 
+                                  result = member_data2.soldiers - hp1 + hp1
+                                  result2 = member_data2.tanks - hp1t + hp1t
+                                  half3 = hp1 * 2 + hp1t * 6
+                            
+                                  win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{hp1} {sold}\n{hp1t} {tank}\n{hearts} : `{health1}`\n**__Commander {victim.name}'s Defence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`", color=0xfbc28d)
+                            
+                                  await ctx.send(embed=win)
+                            
+                                  winner1 = discord.Embed(title="Attack Completed Successfully", description=F"**Commander {ctx.author.name}** wins the battle with {hp1} {sold} & {hp1t} {tank} left!", color=0x567d46)
+                            
+                                  if half2 <= 0:
+                                    winner1.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
+                                    winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                    await ctx.send(embed=winner1)
+                                    member_data.resources += member_data2.resources
+                                    member_data.strikes -= 1
+                                    member_data2.soldiers = 0 
+                                    member_data.soldiers -= int(result)
+                                    member_data.tanks -= int(result2)
+                                    member_data2.tanks = 0
+                                    member_data2.resources = 0
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
+                                    save_member_data(ctx.author.id, member_data)
+                                    save_member_data(victim.id, member_data2)
+                                    emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
+                                    await victim.send(embed=emergency3)
+                                  
+                                  
+                                    return
+                                  else:
+                                    member_data2.resources -= int(round(half3))
+                                    member_data.soldiers -= int(result)
+                                    member_data.tanks -= int(result2)
+                                    member_data2.soldiers = 0 
+                                    member_data2.tanks = 0
+                                    member_data.resources += int(round(half3))
+                                    member_data.strikes -= 1
+                                    member_data5.medals += 1
+                                    save_member_data5(ctx.author.id, member_data5)
+                                    save_member_data(ctx.author.id, member_data)
+                                    save_member_data(victim.id, member_data2)
+                              
+
+                                    winner1.add_field(name="__Rewards:__", value=f"{round(half3)} {res}")
+                                    winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                    await ctx.send(embed=winner1)
+                                    emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
+                                    await victim.send(embed=emergency3)
+                                    return
+                            
+
+
+                          
+                              if hp1r == hp2r:
+                                draw = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`", color=0xfbc28d)
+                                await ctx.send(embed=draw)  
+                                winner1tt = discord.Embed(title="Draw!", description=F"**Commander {ctx.author.name}** stalemates with **commander {victim.name}**", color=yellow)
+                            
+                                    
+                                winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                await ctx.send(embed=winner1tt)
+                                  
                                 member_data.soldiers -= int(soldiers.content)
-                                member_data.tanks -= int(round(final))
-                                member_data2.tanks = 0
-                                member_data2.resources = 0
-                                member_data5.medals += 1
-                                save_member_data5(ctx.author.id, member_data5)
-                                save_member_data(ctx.author.id, member_data)
-                                save_member_data(victim.id, member_data2)
-                                emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
-                                await victim.send(embed=emergency3)
-                                  
-                                  
-                                return
-                              else:
-                                member_data2.resources -= int(round(killer))
-                                member_data.soldiers -= int(tanks.content)
-                                member_data.tanks -= int(round(final))
+                                member_data.tanks -= int(tanks.content)
                                 member_data2.soldiers = 0 
                                 member_data2.tanks = 0
-                                member_data.resources += int(round(killer))
                                 member_data.strikes -= 1
-                                member_data5.medals += 1
-                                save_member_data5(ctx.author.id, member_data5)
-                                save_member_data(ctx.author.id, member_data)
-                                save_member_data(victim.id, member_data2)
                               
-
-                                winner1.add_field(name="__Rewards:__", value=f"{round(killer)} {res}")
-                                winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-                                await ctx.send(embed=winner1)
-                                emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
-                                await victim.send(embed=emergency3)
-                                return
-                            if hp1t > hp2t:
-                            
-
-                              half2 = member_data2.resources - hp1 * 2 + hp1t * 6 
-                              result = member_data2.soldiers - hp1 + hp1
-                              result2 = member_data2.tanks - hp1t + hp1t
-                              half3 = hp1 * 2 + hp1t * 6
-                            
-                              win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{hp1} {sold}\n{hp1t} {tank}\n{hearts} : `{health1}`\n**__Commander {victim.name}'s Defence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`", color=0xfbc28d)
-                            
-                              await ctx.send(embed=win)
-                            
-                              winner1 = discord.Embed(title="Attack Completed Successfully", description=F"**Commander {ctx.author.name}** wins the battle with {hp1} {sold} & {hp1t} {tank} left!", color=0x567d46)
-                            
-                              if half2 <= 0:
-                                winner1.add_field(name="__Rewards:__", value=f"{member_data2.resources} {res}")
-                                winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-                                await ctx.send(embed=winner1)
-                                member_data.resources += member_data2.resources
-                                member_data.strikes -= 1
-                                member_data2.soldiers = 0 
-                                member_data.soldiers -= int(result)
-                                member_data.tanks -= int(result2)
-                                member_data2.tanks = 0
-                                member_data2.resources = 0
-                                member_data5.medals += 1
-                                save_member_data5(ctx.author.id, member_data5)
                                 save_member_data(ctx.author.id, member_data)
                                 save_member_data(victim.id, member_data2)
-                                emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
-                                await victim.send(embed=emergency3)
-                                  
-                                  
-                                return
-                              else:
-                                member_data2.resources -= int(round(half3))
-                                member_data.soldiers -= int(result)
-                                member_data.tanks -= int(result2)
-                                member_data2.soldiers = 0 
-                                member_data2.tanks = 0
-                                member_data.resources += int(round(half3))
-                                member_data.strikes -= 1
-                                member_data5.medals += 1
-                                save_member_data5(ctx.author.id, member_data5)
-                                save_member_data(ctx.author.id, member_data)
-                                save_member_data(victim.id, member_data2)
-                              
-
-                                winner1.add_field(name="__Rewards:__", value=f"{round(half3)} {res}")
-                                winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-                                await ctx.send(embed=winner1)
-                                emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
-                                await victim.send(embed=emergency3)
-                                return
-                            
-
-
-                          
-                          if hp1r == hp2r:
-                            draw = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`", color=0xfbc28d)
-                            await ctx.send(embed=draw)  
-                            winner1tt = discord.Embed(title="Draw!", description=F"**Commander {ctx.author.name}** stalemates with **commander {victim.name}**", color=yellow)
-                            
                                     
-                            winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-                            await ctx.send(embed=winner1tt)
-                                  
-                            member_data.soldiers -= int(soldiers.content)
-                            member_data.tanks -= int(tanks.content)
-                            member_data2.soldiers = 0 
-                            member_data2.tanks = 0
-                            member_data.strikes -= 1
-                              
-                            save_member_data(ctx.author.id, member_data)
-                            save_member_data(victim.id, member_data2)
-                                    
-                            winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                winner1tt.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
                             
                                   
 
-                            emergency5 = discord.Embed(description="**Emergency**\n-\nYou have been attacked!\n-\nYour defences made it a draw, however your troops are dead", color=yellow)
+                                emergency5 = discord.Embed(description="**Emergency**\n-\nYou have been attacked!\n-\nYour defences made it a draw, however your troops are dead", color=yellow)
                                 
 
-                            await victim.send(embed=emergency5)
-                            return
+                                await victim.send(embed=emergency5)
+                                return
 
-                          if hp2r > hp1r:
-                            if hp2 > hp1:
-                              hp1 = 0
+                              if hp2r > hp1r:
+                                if hp2 > hp1:
+                                  hp1 = 0
 
                               
 
@@ -391,102 +406,102 @@ class actions(commands.Cog):
                             
                               
                             
-                              win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{hp2} {sold}\n{hp2t} {tank}\n{hearts} : `{health2}`", color=0xfbc28d)
+                                  win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{hp2} {sold}\n{hp2t} {tank}\n{hearts} : `{health2}`", color=0xfbc28d)
                             
-                              await ctx.send(embed=win)
+                                  await ctx.send(embed=win)
                             
-                              winner1 = discord.Embed(title="Attack Failed!", description=F"**Commander {victim.name}** defended the attack with {hp2} {sold} & {hp2t} {tank} left!", color=0xFF0000)
-                              winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                  winner1 = discord.Embed(title="Attack Failed!", description=F"**Commander {victim.name}** defended the attack with {hp2} {sold} & {hp2t} {tank} left!", color=0xFF0000)
+                                  winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
 
                               
-                              await ctx.send(embed=winner1) 
+                                  await ctx.send(embed=winner1) 
                                 
                                   
                                   
                              
                                 
-                              member_data.soldiers -= int(tanks.content)
-                              member_data.tanks -= int(tanks.content)
-                              member_data2.soldiers -= int(hp2) 
-                              member_data2.tanks -= int(hp2t)
+                                  member_data.soldiers -= int(tanks.content)
+                                  member_data.tanks -= int(tanks.content)
+                                  member_data2.soldiers -= int(hp2) 
+                                  member_data2.tanks -= int(hp2t)
                                 
-                              member_data.strikes -= 1
+                                  member_data.strikes -= 1
                                 
-                              save_member_data5(ctx.author.id, member_data5)
-                              save_member_data(ctx.author.id, member_data)
-                              save_member_data(victim.id, member_data2)
+                                  save_member_data5(ctx.author.id, member_data5)
+                                  save_member_data(ctx.author.id, member_data)
+                                  save_member_data(victim.id, member_data2)
                               
 
                                
                               
-                              emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked!\n-\nYour defences won with {hp2} {sold} & {hp2t} {tank} left", color=red)
-                              await victim.send(embed=emergency3)
-                              return
-                            if hp2t < hp1t:
-                              hp2t = 0
+                                  emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked!\n-\nYour defences won with {hp2} {sold} & {hp2t} {tank} left", color=red)
+                                  await victim.send(embed=emergency3)
+                                  return
+                                if hp2t < hp1t:
+                                  hp2t = 0
                             
-                              hpa = hp2 - hp1t * 10
+                                  hpa = hp2 - hp1t * 10
                                
-                              result = member_data.soldiers - hp2 + hp2
-                              result2 = member_data.tanks - hp2t + hp2t
+                                  result = member_data.soldiers - hp2 + hp2
+                                  result2 = member_data.tanks - hp2t + hp2t
 
                             
-                              win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{hpa} {sold}\n{dead} {tank}\n{hearts} : `{health2}`", color=0xfbc28d)
+                                  win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{hpa} {sold}\n{dead} {tank}\n{hearts} : `{health2}`", color=0xfbc28d)
                             
-                              await ctx.send(embed=win)
+                                  await ctx.send(embed=win)
                             
-                              winner2 = discord.Embed(title="Attack Failed", description=F"**Commander {victim.name}** defended the attack with {hpa} {sold} left!", color=0xFF0000)
+                                  winner2 = discord.Embed(title="Attack Failed", description=F"**Commander {victim.name}** defended the attack with {hpa} {sold} left!", color=0xFF0000)
                             
                               
-                              await ctx.send(embed=winner2)
+                                  await ctx.send(embed=winner2)
                                 
-                              member_data.strikes -= 1
-                              member_data.soldiers -= int(soldiers.content)
-                              member_data.tanks -= int(tanks.content)
-                              member_data2.tanks -= int(result2) 
-                              member_data2.soldiers -= int(result) 
+                                  member_data.strikes -= 1
+                                  member_data.soldiers -= int(soldiers.content)
+                                  member_data.tanks -= int(tanks.content)
+                                  member_data2.tanks -= int(result2) 
+                                  member_data2.soldiers -= int(result) 
                          
-                              save_member_data5(ctx.author.id, member_data5)
-                              save_member_data(ctx.author.id, member_data)
-                              save_member_data(victim.id, member_data2)
-                              emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)
-                              await victim.send(embed=emergency3)
+                                  save_member_data5(ctx.author.id, member_data5)
+                                  save_member_data(ctx.author.id, member_data)
+                                  save_member_data(victim.id, member_data2)
+                                  emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked by commander `{ctx.author.name} ({ctx.author.id})`\n-\nYour defences lost, and your troops are dead", color=red)    
+                                  await victim.send(embed=emergency3)
                                   
                                   
-                              return
+                                  return
                               
                               
 
                                 
-                              emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked!\n-\nYour defences won with {hpa} {sold} left", color=red)
-                              await victim.send(embed=emergency3)
-                              return
+                                  emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked!\n-\nYour defences won with {hpa} {sold} left", color=red)
+                                  await victim.send(embed=emergency3)
+                                  return
                             
 
-                            if hp2t > hp1t:
-                              win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{hp2} {sold}\n{hp2t} {tank}\n{hearts} : `{health2}`", color=0xfbc28d)
+                                if hp2t > hp1t:
+                                  win = discord.Embed(description=f"**__Commander {ctx.author.name}'s Offence__**\n{dead} {sold}\n{dead} {tank}\n{hearts} : `0`\n**__Commander {victim.name}'s Defence__**\n{hp2} {sold}\n{hp2t} {tank}\n{hearts} : `{health2}`", color=0xfbc28d)
                             
-                              await ctx.send(embed=win)
+                                  await ctx.send(embed=win)
                             
-                              winner1 = discord.Embed(title="Attack Failed", description=F"**Commander {victim.name}** defended the attack with {hp2} {sold} & {hp2t} {tank} left!", color=0xFF0000)
+                                  winner1 = discord.Embed(title="Attack Failed", description=F"**Commander {victim.name}** defended the attack with {hp2} {sold} & {hp2t} {tank} left!", color=0xFF0000)
                             
                             
-                              winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
-                              await ctx.send(embed=winner1)
+                                  winner1.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
+                                  await ctx.send(embed=winner1)
                             
                               
-                              member_data.strikes -= 1
-                              member_data2.soldiers = int(hp2) 
-                              member_data.soldiers -= int(soldiers.content)
-                              member_data.tanks -= int(tanks.content)
-                              member_data2.tanks = int(hp2t)
-                              save_member_data(ctx.author.id, member_data)
-                              save_member_data(victim.id, member_data2)
-                              emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked!\n-\nYour defences won with {hp2} {sold} and {hp2t} {tank} left", color=red)
-                              await victim.send(embed=emergency3)
+                                  member_data.strikes -= 1
+                                  member_data2.soldiers = int(hp2) 
+                                  member_data.soldiers -= int(soldiers.content)
+                                  member_data.tanks -= int(tanks.content)
+                                  member_data2.tanks = int(hp2t)
+                                  save_member_data(ctx.author.id, member_data)
+                                  save_member_data(victim.id, member_data2)
+                                  emergency3 = discord.Embed(description=f"**Emergency**\n-\nYou have been attacked!\n-\nYour defences won with {hp2} {sold} and {hp2t} {tank} left", color=red)
+                                  await victim.send(embed=emergency3)
                                   
                                   
-                              return
+                                  return
                             
                             
 
@@ -497,31 +512,46 @@ class actions(commands.Cog):
 
 
                             
-                        elif str(reaction) == "❌":
-                          await war.clear_reactions()
-                          Cancel = discord.Embed(description='**Attack cancelled**\n-\n"War does not determine who is right - only who is left" -Anonymous', color=yellow)
-                          member_data.strikes -= 1
-                          save_member_data(ctx.author.id, member_data)
-                          await ctx.send(embed=Cancel)
-                          break
+                            elif str(reaction) == "❌":
+                              await war.clear_reactions()
+                              Cancel = discord.Embed(description='**Attack cancelled**\n-\n"War does not determine who is right - only who is left" -Anonymous', color=yellow)    
+                              member_data.strikes -= 1
+                              save_member_data(ctx.author.id, member_data)
+                              await ctx.send(embed=Cancel)
+                              break
                       
-                        try:
-                          reaction, user = await self.client.wait_for("reaction_add", timeout=35.0, check=check)
-                          await war.remove_reaction(reaction, user)
-                          ctx.command.reset_cooldown(ctx)
-                        except:
-                          break    
-                  else:
-                    error = discord.Embed(title="ERROR", description=f"You don't have that much {tank}! cancelling the attack.", color=yellow)
-                    await ctx.send(embed=error)
+                            try:
+                              reaction, user = await self.client.wait_for("reaction_add", timeout=35.0, check=check)
+                              await war.remove_reaction(reaction, user)
+                              ctx.command.reset_cooldown(ctx)
+                            except:
+                              break
+                  
+                      else:
+                        error = discord.Embed(title="ERROR", description=f"You don't have that much {tank}! cancelling the attack.", color=yellow)
+                        await ctx.send(embed=error)
+                        ctx.command.reset_cooldown(ctx)
+                        return
+
+                    else:
+                      error = discord.Embed(title="ERROR", description=f"The amount of {sold} you entered is out of range from what you currently have, **cancelling the attack sequence**", color=yellow)
+                      await ctx.send(embed=error)
+                      ctx.command.reset_cooldown(ctx)
+                      return
+                  elif str(reaction) == "❌":
+                    await firm.clear_reactions()
+                    vuala = discord.Embed(title="Retreat!", description=f"Attack cancelled, peace should always come first commander :white_check_mark:", color=green)
+                    await firm.edit(embed=vuala)
                     ctx.command.reset_cooldown(ctx)
                     return
 
-                else:
-                  error = discord.Embed(title="ERROR", description=f"The amount of {sold} you entered is out of range from what you currently have, **cancelling the attack sequence**", color=yellow)
-                  await ctx.send(embed=error)
-                  ctx.command.reset_cooldown(ctx)
-                  return
+                  try:
+                    reaction, user = await self.client.wait_for("reaction_add", timeout=35.0, check=check)
+                    await firm.remove_reaction(reaction, user)
+                    ctx.command.reset_cooldown(ctx)
+                  except:
+                    break
+                    
         else:
           await ctx.reply(f"Commander {ctx.author.name}, you can't attack a bot.")
           ctx.command.reset_cooldown(ctx)
@@ -552,6 +582,7 @@ class actions(commands.Cog):
             save_member_data(ctx.author.id, member_data2)
             await message.clear_reactions()
             member_data = load_member_data(commander.id)
+            member_data4 = load_member_data4(commander.id)
             health1 = member_data.soldiers * 1
             health2 = member_data.soldiers * 1 + member_data.tanks * 10
     
@@ -559,6 +590,7 @@ class actions(commands.Cog):
       
             embed.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}\n{member_data.strikes} {strike}", inline = False)
             embed.add_field(name="Army", value=f"{str(member_data.soldiers)} {sold}\n{str(member_data.tanks)} {tank}", inline = False)
+            embed.add_field(name="Specials", value=f"{member_data4.ca} {ca}\n{member_data4.crate} {crate}", inline = False)
             embed.add_field(name="Wealth", value=f"{str(member_data.resources)} {res}", inline = False)
             embed.add_field(name="Total HP", value=f"{health2} {hearts}", inline = False)
       #----
@@ -566,6 +598,7 @@ class actions(commands.Cog):
       
             embeds.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}\n{member_data.strikes} {strike}", inline = False)
             embeds.add_field(name="Army", value=f"{str(member_data.soldiers)} {sold}\n{str(member_data.tanks)} {tank}\n{str(member_data.spy)} :detective:", inline = False)
+            embeds.add_field(name="Specials", value=f"{member_data4.ca} {ca}\n{member_data4.crate} {crate}", inline = False)
             embeds.add_field(name="Wealth", value=f"{str(member_data.resources)} {res}", inline = False)
             embeds.add_field(name="Total HP", value=f"{health2} {hearts}", inline = False)
 
@@ -575,6 +608,7 @@ class actions(commands.Cog):
       
             embedsp.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}\n{member_data.strikes} {strike}", inline = False)
             embedsp.add_field(name="Army", value=f"{str(member_data.soldiers)} {sold}\n{str(member_data.spy)} :detective:", inline = False)
+            embedsp.add_field(name="Specials", value=f"{member_data4.ca} {ca}\n{member_data4.crate} {crate}", inline = False)
             embedsp.add_field(name="Wealth", value=f"{str(member_data.resources)} {res}", inline = False)
             embedsp.add_field(name="Total HP", value=f"{health2} {hearts}", inline = False)
       
@@ -583,6 +617,7 @@ class actions(commands.Cog):
             embed2 = discord.Embed(title=f"{commander.name}'s Base", color=red)
             embed2.add_field(name="Protection", value=f"{str(member_data.wall)} {wall}\n{member_data.strikes} {strike}", inline = False)
             embed2.add_field(name="Army", value=f"Soldiers : {str(member_data.soldiers)} {sold}", inline = False)
+            embed2.add_field(name="Specials", value=f"{member_data4.ca} {ca}\n{member_data4.crate} {crate}", inline = False)
             embed2.add_field(name="Wealth", value=f"Resources : {str(member_data.resources)} {res}", inline = False)
             embed2.add_field(name="Total HP", value=f"{health1} {hearts}", inline = False)
             embed.set_thumbnail(url="https://media.discordapp.net/attachments/814828851724943361/995035645053513829/ezgif.com-gif-maker.jpg")

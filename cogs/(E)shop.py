@@ -17,14 +17,18 @@ strike = "<:strike:1025877750298452028>"
 ca = "<:ca:1036338258629632020>"
 crates = "<:crate:1036330635238842478>"
 medal = "🏅"
+detective = "🕵️"
+
+
+
 green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700
-data_filename4 = "specials"
-data_filename5 = "medals"
-data_filename = "data.pickle"
+data_filename4 = "currency files/specials"
+data_filename5 = "currency files/medals"
+data_filename = "currency files/data.pickle"
 class Data:
-      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, crate, medals):
+      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, crate, medals, scrap, ca):
         self.resources = resources
         self.soldiers = soldiers
         self.tanks = tanks
@@ -33,6 +37,8 @@ class Data:
         self.strikes = strikes
         self.crate = crate
         self.medals = medals
+        self.ca = ca
+        self.scrap = scrap
 
 
 class shop(commands.Cog):
@@ -233,7 +239,7 @@ def load_member_data(member_ID):
     data = load_data()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -261,7 +267,7 @@ def load_member_data4(member_ID):
     data = load_data4()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -279,18 +285,6 @@ def save_member_data4(member_ID, member_data4):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 def load_data5():
         if os.path.isfile(data_filename5):
             with open(data_filename5, "rb") as file:
@@ -302,7 +296,7 @@ def load_member_data5(member_ID):
     data = load_data5()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 

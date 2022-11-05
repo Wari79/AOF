@@ -53,6 +53,10 @@ class system(commands.Cog):
         elif isinstance(error, CommandNotFound):
           comm = discord.Embed(description="**Action failed**, this command hasn't been found in the database.", color=red)
           await ctx.reply(embed=comm)
+
+        elif isinstance(error, TimeoutError):
+          timeout = discord.Embed(title="Timeout!",description="Sorry commander, you didn't respond/react in the stated period.", color=red)
+          await ctx.reply(embed=timeout)
         elif isinstance(error, MissingRole):
           roler = discord.Embed(description=f"Commander, you are missing <@&{error.missing_role}> role", color=red)
           await ctx.reply(embed=roler)

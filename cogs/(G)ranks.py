@@ -35,9 +35,9 @@ spy = "🕵️"
 
 
 
-data_filename = "data.pickle"
-data_filename4 = "specials"
-data_filename5 = "medals"
+data_filename = "currency files/data.pickle"
+data_filename4 = "currency files/specials"
+data_filename5 = "currency files/medals"
 green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700

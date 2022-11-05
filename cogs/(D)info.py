@@ -20,9 +20,9 @@ spy = "🕵️"
 
 
 
-data_filename = "data.pickle"
-data_filename4 = "specials"
-data_filename5 = "medals"
+data_filename = "currency files/data.pickle"
+data_filename4 = "currency files/specials"
+data_filename5 = "currency files/medals"
 class Data:
       def __init__(self, resources, soldiers, tanks, spy, wall, strikes, crate, ca, scrap, medals):
         self.resources = resources

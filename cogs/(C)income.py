@@ -21,9 +21,9 @@ dead = "<:dead:1025878302503739414>"
 spy = "🕵️"
 
 
-data_filename = "data.pickle"
-data_filename3 = "quest2"
-data_filename4 = "specials"
+data_filename = "currency files/data.pickle"
+data_filename3 = "currency files/quest2"
+data_filename4 = "currency files/specials"
 green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700

@@ -74,6 +74,7 @@ async def r(ctx):
   client.reload_extension("cogs.(G)ranks")
   client.reload_extension("cogs.(H)quest")
   client.reload_extension("cogs.(I)clans")
+  client.reload_extension("cogs.(F)actions2")
   await asyncio.sleep(2)
   third = discord.Embed(description="Refreshed **9** cog files", color=green)
   await second.edit(embed=third)
