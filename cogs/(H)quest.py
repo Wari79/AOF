@@ -38,12 +38,13 @@ data_filename5 = "currency files/medals"
 data_filename2 = "currency files/data.pickle"
 data_filename = "currency files/data.pickle2"
 data_filename3 = "currency files/quest2"
+data_filename6 = "currency files/counter"
 green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700
 
 class Data:
-      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, mesg, s, r, scrap, crate, ca, medals):
+      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, mesg, s, r, scrap, crate, ca, medals, cfc, cfca):
         self.resources = resources
         self.soldiers = soldiers
         self.tanks = tanks
@@ -57,6 +58,8 @@ class Data:
         self.medals = medals
         self.scra = scrap
         self.ca = ca
+        self.cfc = cfc
+        self.cfca = cfca
         
 
 class quest(commands.Cog):
@@ -156,7 +159,9 @@ class quest(commands.Cog):
   
     @commands.Cog.listener()
     async def on_message(self, message):
+      member_data2 = load_member_data2(message.author.id)
       member_data3 = load_member_data3(message.author.id)
+      member_data6 = load_member_data6(message.author.id)
       if member_data3.s >= 150:
         with open("Quests/(B)quest.json") as json_file:
               data = json.load(json_file)
@@ -203,7 +208,29 @@ class quest(commands.Cog):
             await message.author.send(embed=reward3)
       else:
         pass
+      if member_data6.cfca >= 3:
+        with open("Quests/(D)quest.json") as json_file:
+              data = json.load(json_file)
+        try:
+            if data["members"][str(message.author.id)]:
+              pass
+        except KeyError:
+            imports = {
+            "member": message.author.id, 
+            "name": message.author.name,
+            "checkability": "Completed"
+            }
+            data["members"][message.author.id] = imports
+            with open("Quests/(D)quest.json", "w") as j:
+              json.dump(data, j, indent=4)
+            member_data2 = load_member_data2(message.author.id)
+            member_data2.resources += 1750
+            save_member_data2(message.author.id, member_data2)
+            reward2 = discord.Embed(description=f"**Quest Completed**\n-\n> You recieved 1750 {res} for completing a quest.", color=green)
+            await message.author.send(embed=reward2)
 
+
+      
 
       if message.channel.id == 939972628205154327:
         member_data = load_member_data(message.author.id)
@@ -236,6 +263,8 @@ class quest(commands.Cog):
           pass
       
 
+
+
   
     @commands.command()
     @commands.guild_only()
@@ -244,35 +273,50 @@ class quest(commands.Cog):
         return
       member_data = load_member_data(ctx.author.id)
       member_data3 = load_member_data3(ctx.author.id)
+      member_data6 = load_member_data6(ctx.author.id)
 
 
 
       #neither completed
-      if member_data.mesg <= 150 and member_data3.s <= 150 and member_data3.r <= 150:
-        progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` Completed ` {comp}\n-\n> **Recruit soldiers 150 times**\n{arr} ` Completed ` {comp}\n-\n> **Gain resources 150 times**\n{arr} ` Completed ` {comp}", color=green)
+      if member_data.mesg < 150 and member_data3.s < 150 and member_data3.r < 150 and member_data6.cfca < 3:
+        progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` {member_data.mesg}/150 `\nReward: 2555 {res}\n-\n> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 2 {strike}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}\n-\n> **Strike 3 commanders using the special Combat Airstrike**\n{arr} ` {member_data6.cfca}/3 `\nReward: 1750 {res}", color=green)
+        await ctx.reply(embed=progress1)
+        return
+
+
+      #resources completed
+      if member_data.mesg < 150 and member_data3.s < 150 and member_data6.cfca < 3 and member_data3.r >= 150:
+        progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` {member_data.mesg}/150 `\nReward: 2555 {res}\n-\n> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 2 {strike}\n-\n> **Strike 3 commanders using the special Combat Airstrike**\n{arr} ` {member_data6.cfca}/3 `\nReward: 1750 {res}", color=green)
         await ctx.reply(embed=progress1)
         return
 
 
 
       #all completed
-      if member_data.mesg > 150 and member_data3.s > 150 and member_data3.r > 150:
+      if member_data.mesg >= 150 and member_data3.s >= 150 and member_data3.r >= 150 and member_data6.cfca >= 3:
         completed = discord.Embed(title="Quests", description=f"> **All Quests completed {comp}**", color=green)
         await ctx.reply(embed=completed)
         return
       
       #soldier completed
-      if member_data.mesg < 150 and member_data3.r < 150 and member_data3.s >= 150:
-        progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` {member_data.mesg}/150 `\nReward: 2555 {res}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}", color=green)
+      if member_data.mesg < 150 and member_data3.r < 150 and member_data6.cfca < 3 and member_data3.s >= 150:
+        progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` {member_data.mesg}/150 `\nReward: 2555 {res}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}\n-\n> **Strike 3 commanders using the special Combat Airstrike**\n{arr} ` {member_data6.cfca}/3 `\nReward: 1750 {res}", color=green)
         await ctx.reply(embed=progress1)
         return
 
       
       #message completed
-      if member_data3.s < 150 and member_data3.r < 150 and member_data.mesg >= 150:
-        progress1 = discord.Embed(title="Quests", description=f"> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 4 {strike}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}", color=green)
+      if member_data3.s < 150 and member_data3.r < 150 and member_data6.cfca < 3 and member_data.mesg >= 150:
+        progress1 = discord.Embed(title="Quests", description=f"> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 4 {strike}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}\n-\n> **Strike 3 commanders using the special Combat Airstrike**\n{arr} ` {member_data6.cfca}/3 `\nReward: 1750 {res}", color=green)
         await ctx.reply(embed=progress1)
         return
+
+      #cfca completed
+      if member_data3.s < 150 and member_data3.r < 150 and member_data.mesg < 150 and member_data6.cfca >= 3:
+        progress1 = discord.Embed(title="Quests", description=f"> **Send 150 messages in <#939972628205154327>**\n{arr} ` {member_data.mesg}/150 `\nReward: 2555 {res}\n-\n> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 2 {strike}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}", color=green)
+        await ctx.reply(embed=progress1)
+        return
+        
 
         
 
@@ -302,11 +346,7 @@ class quest(commands.Cog):
 
 
 
-      #resources completed
-      if member_data.mesg <= 150 and member_data3.s <= 150 and member_data3.r >= 150:
-        progress1 = discord.Embed(title="Quests", description=f"> **Recruit soldiers 150 times**\n{arr} ` {member_data3.s}/150 `\nReward: 4 {strike}\n-\n> **Gain resources 150 times**\n{arr} ` {member_data3.r}/150 `\nReward: 2 {strike} & 2 {wall}", color=green)
-        await ctx.reply(embed=progress1)
-        return
+
 
 
 
@@ -348,7 +388,7 @@ def load_member_data(member_ID):
     data = load_data()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -373,7 +413,7 @@ def load_member_data2(member_ID):
     data = load_data2()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -400,7 +440,7 @@ def load_member_data3(member_ID):
     data = load_data3()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -428,7 +468,7 @@ def load_member_data4(member_ID):
     data = load_data4()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -455,7 +495,7 @@ def load_member_data5(member_ID):
     data = load_data5()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -466,4 +506,33 @@ def save_member_data5(member_ID, member_data5):
     data[member_ID] = member_data5
 
     with open(data_filename5, "wb") as file:
+        pickle.dump(data, file)
+
+
+
+
+
+
+def load_data6():
+        if os.path.isfile(data_filename6):
+            with open(data_filename6, "rb") as file:
+              return pickle.load(file)
+        else:
+            return dict()
+
+def load_member_data6(member_ID):
+    data = load_data6()
+
+    if member_ID not in data:
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    return data[member_ID]
+
+
+def save_member_data6(member_ID, member_data6):
+    data = load_data6()
+
+    data[member_ID] = member_data6
+
+    with open(data_filename6, "wb") as file:
         pickle.dump(data, file)

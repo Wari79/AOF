@@ -27,11 +27,12 @@ inw = "https://media.discordapp.net/attachments/814828851724943361/1038503916230
 data_filename = "currency files/data.pickle"
 data_filename4 = "currency files/specials"
 data_filename5 = "currency files/medals"
+data_filename6 = "currency files/counter"
 green = 0x567d46
 red = 0xFF0000
 yellow = 0xFFD700
 class Data:
-      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, medals, crate, ca, scrap):
+      def __init__(self, resources, soldiers, tanks, spy, wall, strikes, medals, crate, ca, scrap, cfc, cfca):
         self.resources = resources
         self.soldiers = soldiers
         self.tanks = tanks
@@ -42,6 +43,8 @@ class Data:
         self.crate = crate
         self.ca = ca
         self.scrap = scrap
+        self.cfc = cfc
+        self.cfca = cfca
 
 
 
@@ -57,6 +60,7 @@ class actions2(commands.Cog):
     @commands.guild_only()
     async def strike(self, ctx, member:discord.Member):
       member_data4 = load_member_data4(ctx.author.id)
+      member_data6 = load_member_data6(ctx.author.id)
       victim_data = load_member_data(member.id)
       victim_data4 = load_member_data4(member.id)
       if member_data4.ca <= 0:
@@ -65,7 +69,7 @@ class actions2(commands.Cog):
 
         
       else:
-        check1 = discord.Embed(title="Warning",description=f"**Commander {ctx.author.name},**\n-\nAir strikes deal a total of `1000` HP damage to the mentioned comander's base. It will destroy several walls, soldiers, and tanks that user might have. Are you sure you want to proceed this ation on {member.mention}", color=yellow)
+        check1 = discord.Embed(title="Warning",description=f"**Commander {ctx.author.name},**\n-\nAir strikes deal a total of `1000` HP damage to the mentioned comander's base. It will destroy several walls, soldiers, and tanks that user might have. Are you sure you want to proceed this action on {member.mention}", color=yellow)
         
         checkc = await ctx.send(embed=check1) 
         
@@ -149,6 +153,16 @@ class actions2(commands.Cog):
 
             emergency = discord.Embed(title="Emergency", description=f"Commander! you have been air striked!, you now have:\n-\n{victim_data.soldiers} {sold}\n{victim_data.tanks} {tank}\n{victim_data.wall} {wall}", color=red)
             await member.send(embed=emergency)
+
+
+
+            if member_data6.cfca >= 3:
+              pass
+            if member_data6.cfca < 3:
+              
+              member_data6.cfca += 1
+              save_member_data6(ctx.author.id, member_data6)
+            
           
           elif str(reaction) == "❌":
             await checkc.clear_reactions()
@@ -179,7 +193,7 @@ def load_member_data(member_ID):
     data = load_data()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -203,7 +217,7 @@ def load_member_data5(member_ID):
     data = load_data5()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -233,7 +247,7 @@ def load_member_data4(member_ID):
     data = load_data4()
 
     if member_ID not in data:
-        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     return data[member_ID]
 
@@ -244,4 +258,34 @@ def save_member_data4(member_ID, member_data4):
     data[member_ID] = member_data4
 
     with open(data_filename4, "wb") as file:
+        pickle.dump(data, file)
+
+
+
+
+
+
+
+def load_data6():
+        if os.path.isfile(data_filename6):
+            with open(data_filename6, "rb") as file:
+              return pickle.load(file)
+        else:
+            return dict()
+
+def load_member_data6(member_ID):
+    data = load_data6()
+
+    if member_ID not in data:
+        return Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    return data[member_ID]
+
+
+def save_member_data6(member_ID, member_data6):
+    data = load_data6()
+
+    data[member_ID] = member_data6
+
+    with open(data_filename6, "wb") as file:
         pickle.dump(data, file)

@@ -19,7 +19,7 @@ ca = "<:ca:1036338258629632020>"
 crates = "<:crate:1036330635238842478>"
 tree = "https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434"
 medal = "🏅"
-detective = "🕵️"
+spy = "🕵️"
 scrap = "⚙️"
 
 
@@ -59,7 +59,7 @@ class shop(commands.Cog):
       member_data4 = load_member_data4(ctx.author.id)
       member_data5 = load_member_data5(ctx.author.id)
 
-      embed1 = discord.Embed(description=f"What shall we construct, commander?\n-\nTank = {tank}\nRobotic spy = 🕵️\nWall = {wall}\nStrike = {strike}\nCrate = {crates}\nScrap = {scrap}\nItems/Costs = 📋\nCancel = ❌", color=0x309730)
+      embed1 = discord.Embed(description=f"What shall we construct, commander?\n-\nTank = {tank}\nRobotic spy = 🕵️\nWall = {wall}\nStrike = {strike}\nCrate = {crates}\nScrap = {scrap}\nCombat Aircraft = {ca}\nItems/Costs = 📋\nCancel = ❌", color=0x309730)
 
       
       embed1.set_footer(icon_url=tree, text="In memory of General Tree")
@@ -98,7 +98,7 @@ class shop(commands.Cog):
             await confirmation.delete()
 
 
-            calculation = int(amount.content) * 75
+            calculation = int(amount.content) * 100
 
             confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {tank} for {calculation} {res}?", color=yellow)
 
@@ -191,7 +191,7 @@ class shop(commands.Cog):
             await confirmation.delete()
 
 
-            calculation = int(amount.content) * 150
+            calculation = int(amount.content) * 190
 
             confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {spy} for {calculation} {res}?", color=yellow)
 
@@ -322,7 +322,7 @@ class shop(commands.Cog):
             await confirmation.delete()
 
 
-            calculation = int(amount.content) * 880
+            calculation = int(amount.content) * 950
 
             confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {wall} for {calculation} {res}?", color=yellow)
 
@@ -413,7 +413,7 @@ class shop(commands.Cog):
             await confirmation.delete()
 
 
-            calculation = int(amount.content) * 1200
+            calculation = int(amount.content) * 1600
 
             confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {strike} for {calculation} {res}?", color=yellow)
 
@@ -507,7 +507,7 @@ class shop(commands.Cog):
             await confirmation.delete()
 
 
-            calculation = int(amount.content) * 3
+            calculation = int(amount.content) * 7
 
             confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {ca} for {calculation} {scrap}?", color=yellow)
 
@@ -570,7 +570,7 @@ class shop(commands.Cog):
 
                   member_data4.scrap -= int(calculation)
                   member_data4.ca += int(amount.content)
-                  save_member_data(ctx.author.id, member_data)
+                  save_member_data4(ctx.author.id, member_data4)
                   return
               elif str(reaction) == "❌":
                 
@@ -597,7 +597,7 @@ class shop(commands.Cog):
             await confirmation.delete()
 
 
-            calculation = int(amount.content) * 850
+            calculation = int(amount.content) * 1000
 
             confirmation2 = discord.Embed(description=f"Are you sure you want to construct {amount.content} {scrap} for {calculation} {res}?", color=yellow)
 
@@ -660,7 +660,7 @@ class shop(commands.Cog):
 
                   member_data.resources -= int(calculation)
                   member_data4.scrap += int(amount.content)
-                  save_member_data(ctx.author.id, member_data)
+                  save_member_data4(ctx.author.id, member_data4)
                   return
               elif str(reaction) == "❌":
                 
@@ -677,7 +677,7 @@ class shop(commands.Cog):
                 break
         elif str(reaction) == "📋":
           await confirmation.clear_reactions()
-          weapons = discord.Embed(description=f"Tank {tank} = **75 {res}**\n-\nRobotic Spy :detective: = **150** {res}\n-\nWall {wall} = **800** {res}\n-\nStrike {strike} = **1200** {res}\n-\nCrate {crates} = **6** {medal}\n-\nScrap {scrap} = **850**\n-\nCA/Combat Aircraft {ca} = **3 {scrap}**", color=green)
+          weapons = discord.Embed(description=f"Tank {tank} = **100 {res}**\n-\nRobotic Spy :detective: = **190** {res}\n-\nWall {wall} = **950** {res}\n-\nStrike {strike} = **1600** {res}\n-\nCrate {crates} = **6** {medal}\n-\nScrap {scrap} = **1000** {res}\n-\nCombat Aircraft {ca} = **7 {scrap}**", color=green)
           weapons.set_footer(icon_url="https://images-ext-1.discordapp.net/external/aryLl3-37PrQXeZqPsAPkkSm4ak0RjefVDc7KNISTPg/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/569970865744248837/a_645b82a88c8aab8f9048e38c5e2ec6ce.gif?width=434&height=434", text="In memory of General Tree")
           await confirmation.edit(embed=weapons)
           ctx.command.reset_cooldown(ctx)

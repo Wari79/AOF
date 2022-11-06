@@ -81,7 +81,7 @@ class income(commands.Cog):
     
     @commands.command(aliases = ["Recruit"])
     @commands.guild_only()
-    @cooldown(1, per_min=3, type=commands.BucketType.user)
+    @cooldown(1, per_sec=45, type=commands.BucketType.user)
     # @cooldown(1, per_sec=5, type=commands.BucketType.user)
     async def recruit(self, ctx):
       
@@ -99,8 +99,11 @@ class income(commands.Cog):
       
         save_member_data(ctx.author.id, member_data)
         member_data3 = load_member_data3(ctx.author.id)
-        member_data3.s += 1
-        save_member_data3(ctx.author.id, member_data3)
+        if member_data3.s >= 150:
+          pass
+        if member_data3.s < 150:
+          member_data3.s += 1
+          save_member_data3(ctx.author.id, member_data3)
 
       
 #-------------------------------------------------------------------------
@@ -110,7 +113,7 @@ class income(commands.Cog):
     
     @commands.command()
     @commands.guild_only()
-    @cooldown(1, per_min=3, type=commands.BucketType.user)
+    @cooldown(1, per_sec=45, type=commands.BucketType.user)
     # @cooldown(1, per_sec=5, type=commands.BucketType.user)
     async def expedition(self, ctx):
       
@@ -127,8 +130,11 @@ class income(commands.Cog):
       
        save_member_data(ctx.author.id, member_data) 
        member_data3 = load_member_data3(ctx.author.id)
-       member_data3.r += 1
-       save_member_data3(ctx.author.id, member_data3)
+       if member_data3.r >= 150:
+         pass
+       if member_data3.r < 150:
+         member_data3.r += 1
+         save_member_data3(ctx.author.id, member_data3)
 
     @commands.command()
     @commands.guild_only()
@@ -171,11 +177,11 @@ class income(commands.Cog):
           await message.edit(embed=start9)
           await asyncio.sleep(1.5)
 
-          option_s = random.randrange(90,175)
+          option_s = random.randrange(100,175)
           rare_list = ["strike", "wall"]
           option_rare = random.choice(rare_list)
           option_rare2 = random.randrange(3,4)
-          option_t = random.randrange(4,6)
+          option_t = random.randrange(10,20)
           
           option_r = random.randrange(150,350)
           option_Spy = random.randrange(3,4)
